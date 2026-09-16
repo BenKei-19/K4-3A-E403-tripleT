@@ -39,3 +39,8 @@
     - Ghi nhận, tổng hợp thông tin phản hồi và insight thực tế từ người dùng.
 
 ---
+
+## Canvas Checkpoint 1
+
+![Canvas Checkpoint 1](design/canvas-checkpoint-1.png)
+

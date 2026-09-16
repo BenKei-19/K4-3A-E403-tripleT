@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Canvas Checkpoint 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    width: 1600px; height: 1060px;
+    font-family: "Be Vietnam Pro", "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: #14225c;
+    background:
+      radial-gradient(1200px 520px at 50% -140px, #ffffff 0%, rgba(255,255,255,0) 72%),
+      #eceff6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .sheet { width: 1600px; height: 1060px; padding: 60px 72px 56px; display: flex; flex-direction: column; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 10px; align-self: flex-start;
+    background: #fff; border: 1px solid #dfe4ef; border-radius: 999px;
+    padding: 9px 22px 9px 16px; box-shadow: 0 2px 6px rgba(23,37,92,.05);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #e08a2e; }
+  .pill .t { font-size: 13px; font-weight: 700; letter-spacing: .17em; text-transform: uppercase; color: #2e3a66; }
+
+  h1 { margin: 20px 0 0; font-size: 44px; font-weight: 700; letter-spacing: -.01em; line-height: 1.1; color: #14225c; }
+  .sub { margin: 11px 0 0; font-size: 18.5px; font-weight: 400; color: #5f6986; line-height: 1.45; }
+
+  .grid {
+    margin-top: 32px; flex-grow: 1;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 32px;
+  }
+  .card {
+    position: relative; overflow: hidden; background: #fff; border-radius: 16px;
+    padding: 28px 34px 30px; display: flex; flex-direction: column;
+    box-shadow: 0 1px 3px rgba(20,34,92,.05), 0 14px 30px rgba(20,34,92,.07);
+  }
+  .bar { position: absolute; top: 0; right: 0; width: 152px; height: 8px; }
+  .label { font-size: 14px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #7b8398; }
+  .h { margin: 12px 0 0; font-size: 25px; font-weight: 700; line-height: 1.24; color: #14225c; letter-spacing: -.005em; }
+  .p { margin: 13px 0 0; font-size: 16.5px; line-height: 1.55; color: #3c4664; text-wrap: pretty; }
+  .p b { font-weight: 700; color: #14225c; }
+  .rule { height: 1px; background: #e7eaf2; margin: 14px 0 0; }
+  .gap { margin: 12px 0 0; font-size: 14.5px; line-height: 1.5; color: #8992a8; text-wrap: pretty; }
+  .spacer { flex-grow: 1; min-height: 8px; }
+
+  .chips { display: flex; gap: 8px; margin: 13px 0 0; }
+  .chip {
+    font-size: 12.5px; font-weight: 700; letter-spacing: .1em; color: #6f6396;
+    background: #f1eefb; border-radius: 6px; padding: 6px 11px;
+  }
+
+  .note { display: flex; gap: 11px; border-radius: 10px; padding: 14px 16px; margin: 14px 0 0; }
+  .note .nd { width: 9px; height: 9px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+  .note .nt { font-size: 15.5px; line-height: 1.5; color: #3c4664; text-wrap: pretty; }
+  .note .nt b { font-weight: 700; color: #14225c; }
+  .note .nt ul { margin: 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .note .nt ul.bul li { position: relative; padding-left: 20px; }
+  .note .nt ul.bul li::before {
+    content: ""; position: absolute; left: 0; top: 8px;
+    width: 9px; height: 9px; border-radius: 50%; background: #4a86c8;
+  }
+  a { color: #2e5fb0; } a:hover { color: #1f4485; }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="pill"><span class="dot"></span><span class="t">Mini Hackathon AI · Checkpoint 1</span></div>
+
+  <h1>CANVAS CHECKPOINT 1</h1>
+  <p class="sub">[Tên nhóm] · [Tên sản phẩm] — tóm tắt thông báo &amp; deadline trong ngày, kèm link tin gốc</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="bar" style="background: linear-gradient(90deg, #8ac9a8, #56a684);"></div>
+      <div class="label">01 · Người dùng &amp; nỗi đau</div>
+      <div class="h">Thông báo quan trọng trôi mất giữa dòng tin nhắn</div>
+      <div class="p"><b>Job:</b> học viên mở Discord sau vài giờ vắng mặt và cần biết ngay hôm nay có thông báo gì, deadline nào mới, mình phải làm gì — mà không phải cuộn ngược lại cả ngày tin nhắn.</div>
+      <div class="rule"></div>
+      <div class="p"><b>Pain:</b> tin quan trọng của TA nằm lẫn giữa hàng trăm tin chat. Học viên hoặc mất thời gian cuộn lại thủ công, hoặc bỏ qua và chấp nhận rủi ro biết muộn một deadline — nên phải đi hỏi lại bot, hỏi bạn bè, tag TA.</div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="card">
+      <div class="bar" style="background: linear-gradient(90deg, #7fb2e5, #4a86c8);"></div>
+      <div class="label">02 · Bằng chứng ban đầu</div>
+      <div class="h">Khảo sát 12 học viên trong lớp</div>
+      <div class="p">Google Form nội bộ, 12 phản hồi (16/09/2026). Thứ học viên tag bot hỏi nhiều nhất đều là thông tin đã từng được thông báo trong kênh: deadline (4 lượt) và điểm danh/XP/quy định (4 lượt).</div>
+      <div class="note" style="background: #eef4fc; display: block;">
+        <div class="nt"><ul class="bul">
+          <li><b>11/12</b> phải tự đi tìm lại thông tin: nhắn bạn bè (6) · tag tay TA/Coach (5) · tự cuộn lại thông báo gốc (4).</li>
+          <li><b>6/12</b> từng nhận thông tin sai hoặc không chắc chắn từ bot hiện tại.</li>
+          <li><b>6/7</b> lần hỏi gần nhất về quy định–deadline là thất bại: 3 dài dòng · 2 sai/mâu thuẫn · 1 đoán bừa.</li>
+        </ul></div>
+      </div>
+      <div class="gap">Còn thiếu: form chưa hỏi trực tiếp “đã từng miss thông báo/deadline chưa” — bổ sung 2 câu trước CP2.</div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="card">
+      <div class="bar" style="background: linear-gradient(90deg, #a79bdc, #7a6cc0);"></div>
+      <div class="label">03 · Lát cắt &amp; automation</div>
+      <div class="h">Một bản tin cuối ngày, không phải một bot chat</div>
+      <div class="chips"><span class="chip">ANNOUNCE</span><span class="chip">DEADLINE</span><span class="chip">SKIP</span></div>
+      <div class="p">Mỗi ngày 21:00, bot quét tin nhắn trong các kênh lớp và gửi tối đa <b>5 mục</b> quan trọng — mỗi mục 1 dòng kèm link tới tin gốc để học viên tự kiểm chứng.</div>
+      <div class="note" style="background: #f3f0fc;">
+        <span class="nd" style="background: #7a6cc0;"></span>
+        <div class="nt"><b>Conditional:</b> đưa vào bản tin khi là thông báo/deadline từ TA–Coach; gắn nhãn “cần xác nhận” khi hạn nộp còn mơ hồ; bỏ qua chat thường — không bịa mục không có trong kênh.</div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="card">
+      <div class="bar" style="background: linear-gradient(90deg, #ecb46a, #cf8b3a);"></div>
+      <div class="label">04 · Người thử &amp; phân công</div>
+      <div class="h">Có người thử, có người chịu trách nhiệm</div>
+      <div class="p"><b>Willing users:</b> 7/12 đồng ý thử bản tin cuối ngày trước giờ demo; 6 người đã để lại tên + mã học viên (danh sách giữ trong nhóm, không đưa lên slide).</div>
+      <div class="note" style="background: #fdf3e6;">
+        <span class="nd" style="background: #cf8b3a;"></span>
+        <div class="nt"><b>5 vai trò:</b> spec + prototype · evidence · AI call · eval · validation/demo — [điền tên từng vai].</div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
