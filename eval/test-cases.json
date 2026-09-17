@@ -1,0 +1,189 @@
+{
+  "_khuon": "Theo hướng dẫn CP3 của BTC: mỗi test case ghi MÃ ĐẦU VÀO, HÀNH VI MONG ĐỢI và ĐIỀU KIỆN ĐẠT — ghi TRƯỚC khi chạy lượt đo đầu tiên. Gồm tình huống thường và tình huống khó.",
+  "_dinh_nghia_quan_trong": "Tin có MỐC THỜI GIAN mà học viên phải làm gì đó trước hoặc vào lúc đó: hạn nộp bài, hạn đăng ký, giờ buổi học/workshop bắt buộc. KHÔNG tính: hướng dẫn thao tác, thông báo không kèm mốc, thông tin trạng thái không kèm hạn, câu hỏi của học viên.",
+  "_nguon_du_lieu": "discord-pack/k4_messages.csv — để NGOÀI repo. Ở đây chỉ ghi mã tin.",
+  "_phan_con_la_mock": "Nhánh HỎI LẠI khi câu hỏi mơ hồ (CLARIFY trong canvas CP1) hiện MỚI CÓ TRONG BẢN MOCK giao diện, chưa nối vào luồng chạy thật. Không đưa vào bộ test case này.",
+  "test_case": [
+    {
+      "ma": "TC01",
+      "loai": "thường",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-13"
+      },
+      "hanh_vi_mong_doi": "Bản tin nêu hạn đăng ký đề tài 23:59 ngày 20/09 (tin M09449)",
+      "dieu_kien_dat": {
+        "kieu": "phai_co",
+        "msg": "M09449"
+      }
+    },
+    {
+      "ma": "TC02",
+      "loai": "thường",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-13"
+      },
+      "hanh_vi_mong_doi": "Bản tin nêu Workshop 02 lúc 20:00 tối 13/09 (tin M21817)",
+      "dieu_kien_dat": {
+        "kieu": "phai_co",
+        "msg": "M21817"
+      }
+    },
+    {
+      "ma": "TC03",
+      "loai": "thường",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-14"
+      },
+      "hanh_vi_mong_doi": "Bản tin nêu thông báo hoàn thiện onboarding (tin M41530)",
+      "dieu_kien_dat": {
+        "kieu": "phai_co",
+        "msg": "M41530"
+      }
+    },
+    {
+      "ma": "TC04",
+      "loai": "thường",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-14"
+      },
+      "hanh_vi_mong_doi": "Bản tin nêu khung giờ nộp daily standup để được cộng XP (tin M78917)",
+      "dieu_kien_dat": {
+        "kieu": "phai_co",
+        "msg": "M78917"
+      }
+    },
+    {
+      "ma": "TC05",
+      "loai": "thường",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-12"
+      },
+      "hanh_vi_mong_doi": "Bản tin nêu ngày bắt đầu ghi nhận XP daily standup là 14/09 (tin M22827)",
+      "dieu_kien_dat": {
+        "kieu": "phai_co",
+        "msg": "M22827"
+      }
+    },
+    {
+      "ma": "TC06",
+      "loai": "khó · câu hỏi lẫn chữ deadline",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-13"
+      },
+      "hanh_vi_mong_doi": "Tin M20574 là học viên hỏi bot ('muộn sau 23h59'), không phải thông báo. Không được đưa vào bản tin dù có chữ giờ.",
+      "dieu_kien_dat": {
+        "kieu": "phai_vang",
+        "msg": "M20574"
+      }
+    },
+    {
+      "ma": "TC07",
+      "loai": "khó · câu hỏi lẫn chữ deadline",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-13"
+      },
+      "hanh_vi_mong_doi": "Tin M40677 là học viên hỏi về nộp muộn, có cả chữ 'deadline' và '23:59'. Không được đưa vào bản tin.",
+      "dieu_kien_dat": {
+        "kieu": "phai_vang",
+        "msg": "M40677"
+      }
+    },
+    {
+      "ma": "TC08",
+      "loai": "khó · thông báo không có mốc",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-14"
+      },
+      "hanh_vi_mong_doi": "Tin M22532 là thông báo tuyển team QA video, có tag @role và giọng chính thức nhưng KHÔNG có mốc thời gian. Không được đưa vào bản tin.",
+      "dieu_kien_dat": {
+        "kieu": "phai_vang",
+        "msg": "M22532"
+      }
+    },
+    {
+      "ma": "TC09",
+      "loai": "khó · bịa nguồn",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-13"
+      },
+      "hanh_vi_mong_doi": "Mọi mục trả về phải dẫn về một tin có thật trong đầu vào. Trả lời trôi chảy nhưng bịa mã tin là KHÔNG ĐẠT.",
+      "dieu_kien_dat": {
+        "kieu": "id_co_that"
+      }
+    },
+    {
+      "ma": "TC10",
+      "loai": "khó · bịa nguồn",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-14"
+      },
+      "hanh_vi_mong_doi": "Như TC09, trên ngày đông tin nhất (277 tin) — nơi dễ bịa mã nhất.",
+      "dieu_kien_dat": {
+        "kieu": "id_co_that"
+      }
+    },
+    {
+      "ma": "TC11",
+      "loai": "khó · thông báo trùng hai kênh",
+      "dau_vao": {
+        "guild": "K4-L2-3",
+        "ngay": "2026-09-12"
+      },
+      "hanh_vi_mong_doi": "M47011 và M12505 là CÙNG một thông báo đổi tên Discord, đăng ở hai kênh cách nhau 1 phút. Bản tin chỉ được nêu một lần, không nêu cả hai.",
+      "dieu_kien_dat": {
+        "kieu": "nhieu_nhat_mot_trong",
+        "msg": [
+          "M47011",
+          "M12505"
+        ]
+      }
+    },
+    {
+      "ma": "TC12",
+      "loai": "khó · mốc bị dời",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-13"
+      },
+      "hanh_vi_mong_doi": "Nếu một mốc bị dời trong ngày, bản tin chỉ nêu bản mới nhất, không nêu bản cũ. Kiểm bằng cách: không có hai mục cùng nói về một mốc.",
+      "dieu_kien_dat": {
+        "kieu": "khong_trung_msg"
+      }
+    },
+    {
+      "ma": "TC13",
+      "loai": "khó · lượng trả về",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-14"
+      },
+      "hanh_vi_mong_doi": "Ngày đông tin nhất không được đổ ra danh sách dài. Tối đa 6 mục — quá số đó là bot đang nhặt cả thứ không có mốc.",
+      "dieu_kien_dat": {
+        "kieu": "toi_da",
+        "so": 6
+      }
+    },
+    {
+      "ma": "TC14",
+      "loai": "khó · mục nào cũng phải có mốc",
+      "dau_vao": {
+        "guild": "K4-L3-4",
+        "ngay": "2026-09-13"
+      },
+      "hanh_vi_mong_doi": "Theo định nghĩa nhóm, mọi mục trong bản tin đều phải kèm được một mốc thời gian cụ thể. Mục không trích ra được mốc là không đạt.",
+      "dieu_kien_dat": {
+        "kieu": "moi_muc_co_moc"
+      }
+    }
+  ]
+}
