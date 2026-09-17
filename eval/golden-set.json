@@ -1,0 +1,77 @@
+{
+  "_dinh_nghia": "NHÓM ĐÃ CHỐT. QUAN TRỌNG = tin có MỐC THỜI GIAN mà học viên phải làm gì đó trước hoặc vào lúc đó. Chỉ gồm: hạn nộp bài · hạn đăng ký · giờ diễn ra buổi học/workshop bắt buộc. KHÔNG gồm: hướng dẫn thao tác, thông báo không kèm mốc, thông tin trạng thái (đã đóng/đã công bố) không kèm hạn, câu hỏi, trò chuyện. Không có mốc thời gian thì không tính.",
+  "_vi_sao_khong_dung_vai_tro": "Trong k4_messages.csv, mod/TA/BTC dùng chung mã D#### với học viên nên KHÔNG biết ai là TA. Phải phán đoán bằng nội dung tin, không bằng người gửi. Định nghĩa này phải trùng với SYSTEM prompt trong codebase/digest.py — sửa một bên mà quên bên kia là số đo sai mà không ai biết.",
+  "_cach_dan_nhan": "Mở discord-pack/k4_messages.csv, lọc theo guild + ngày của từng lát (KHÔNG lọc kênh), bỏ dòng is_bot=True, đọc cột content, ghi msg_id của tin quan trọng vào msg_ref. CHỈ GHI MÃ TIN, không dán nguyên văn — quy định bảo mật cấm đưa data pack vào repo public. Cần minh hoạ thì trích tối đa 2 câu ở trường vi_sao.",
+  "_phan_cong": "Khánh: 3 lát của K4-L3-4 · Huy: 2 lát của K4-L2-3. Mỗi người dán thêm 1 lát của người kia để so chéo — chỗ nào lệch là chỗ định nghĩa còn mơ hồ, sửa định nghĩa trước khi sửa prompt.",
+  "ngay": [
+    {
+      "guild": "K4-L3-4",
+      "ngay": "2026-09-13",
+      "tong_tin": 129,
+      "nguoi_dan_nhan": "Khánh",
+      "muc_quan_trong": [
+        {
+          "msg_ref": "M21817",
+          "loai": "DEADLINE",
+          "vi_sao": ""
+        },
+        {
+          "msg_ref": "M09449",
+          "loai": "DEADLINE",
+          "vi_sao": ""
+        }
+      ]
+    },
+    {
+      "guild": "K4-L3-4",
+      "ngay": "2026-09-12",
+      "tong_tin": 109,
+      "nguoi_dan_nhan": "Khánh",
+      "muc_quan_trong": [
+        {
+          "msg_ref": "M22827",
+          "loai": "DEADLINE",
+          "vi_sao": ""
+        }
+      ]
+    },
+    {
+      "guild": "K4-L3-4",
+      "ngay": "2026-09-14",
+      "tong_tin": 277,
+      "nguoi_dan_nhan": "Khánh",
+      "muc_quan_trong": [
+        {
+          "msg_ref": "M41530",
+          "loai": "DEADLINE",
+          "vi_sao": ""
+        },
+        {
+          "msg_ref": "M78917",
+          "loai": "DEADLINE",
+          "vi_sao": ""
+        }
+      ]
+    },
+    {
+      "guild": "K4-L2-3",
+      "ngay": "2026-09-12",
+      "tong_tin": 128,
+      "nguoi_dan_nhan": "Huy",
+      "muc_quan_trong": []
+    },
+    {
+      "guild": "K4-L2-3",
+      "ngay": "2026-09-13",
+      "tong_tin": 136,
+      "nguoi_dan_nhan": "Huy",
+      "muc_quan_trong": []
+    }
+  ],
+  "_lat_cat": "Mỗi lát = MỘT SERVER + MỘT NGÀY, gộp mọi kênh. Không lọc kênh vì thông báo rải đều 12 kênh, mà học viên chỉ quan tâm 'hôm nay có gì'. Tin của bot đã được loại tự động khỏi đầu vào.",
+  "_baseline": "discord-pack/k4_daily_reports.md là BẢN TIN BOT HIỆN TẠI đang chạy thật, BTC đã chỉ ra sẵn lỗi của nó. So kết quả nhóm với bản tin đó là số đo mạnh hơn nhiều so với một con số tuyệt đối.",
+  "_meo_dan_nhan": "Lọc nhanh ứng viên: tin có @everyone/@here/[@role] (13 tin toàn pack) hoặc tin dài >200 ký tự (36 tin). Đọc hết các tin đó trước, rồi quét phần còn lại. Nhanh hơn đọc tuần tự 779 tin.",
+  "_quy_tac_doi_lich": "BẪY DỄ DÍNH NHẤT. Nếu một mốc bị dời trong ngày (vd Workshop 20:00 rồi đổi sang 21:00): ghi TIN MỚI vào muc_quan_trong, ĐỪNG ghi tin cũ, và ghi mã tin cũ vào trường thay_the_cho. Nếu ghi cả hai thì máy sẽ tính là bot 'bỏ sót' tin cũ — sai hoàn toàn, vì bot cố tình bỏ nó.",
+  "_quy_tac_khong_lap": "Một mốc chỉ xuất hiện MỘT lần. Hai tin nói về cùng một hạn thì chỉ ghi tin đầy đủ hơn.",
+  "_dong_bo": "Định nghĩa này phải trùng với biến SYSTEM trong codebase/digest.py. Sửa một bên mà quên bên kia là số đo sai mà không ai biết."
+}
