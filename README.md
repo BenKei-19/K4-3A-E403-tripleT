@@ -44,3 +44,36 @@
 
 ![Canvas Checkpoint 1](design/canvas-checkpoint-1.png)
 
+---
+
+## Sản phẩm — Trợ Lý Kute
+
+**Tối ưu một lượt tương tác đã có** của bot Trợ Lý trong server lớp: học viên hỏi
+*"những thông tin quan trọng tôi cần nắm là gì?"* → bot quét **mọi kênh người đó
+có quyền đọc** (kể cả kênh đội/nhóm) trong **3 ngày gần nhất**, rồi **trả lời
+riêng — chỉ người hỏi thấy** — danh sách mốc thời gian kèm link về tin gốc.
+
+Không phải bot mới, không phải bảng tin, không tự đẩy tin định kỳ.
+
+| Đọc gì | Ở đâu |
+|---|---|
+| **Spec đầy đủ** (§1–§9, bằng chứng, số đo) | [`spec.md`](spec.md) |
+| Cách chạy, luồng xử lý, phần nào thật phần nào mock | [`codebase/README.md`](codebase/README.md) |
+| Bộ 25 test case + đáp án dán tay | [`eval/test-cases.json`](eval/test-cases.json) · [`eval/golden-set.json`](eval/golden-set.json) |
+| Kết quả hai lượt đo | [`eval/ket-qua-luot-1.md`](eval/ket-qua-luot-1.md) (đã khoá) · [`eval/ket-qua-luot-2.md`](eval/ket-qua-luot-2.md) |
+| **Slide pitch 6 trang** | [`demo-slides.pdf`](demo-slides.pdf) — nguồn: [`design/demo-slides.html`](design/demo-slides.html) |
+| Kịch bản quay video demo dự phòng | [`design/kich-ban-video-cp5.md`](design/kich-ban-video-cp5.md) |
+| Cho người ngoài dùng thử (R6) | [`validation/`](validation/) |
+| Reflection cá nhân | [`reflection/`](reflection/) |
+
+Ba con số nói vì sao làm như vậy — đều đếm từ data thật BTC cấp (1.092 tin, 3 ngày):
+
+- **85%** học viên (171/201) chỉ xuất hiện ở đúng **một** kênh → một bản tin chung
+  không thể đúng cho tất cả, câu trả lời phải bám theo kênh của từng người.
+- **88%** số chữ trong kênh đông nhất là do bot đăng công khai → trả lời riêng là
+  cách duy nhất vừa trả lời đủ, vừa không làm loãng kênh lớp.
+- **2/5** mốc còn hiệu lực tính đến hết 14/09 lại được đăng từ ngày hôm trước →
+  phạm vi "trong ngày" bỏ sót 40%, nên cửa sổ phải là 3 ngày.
+
+> Dữ liệu pack của BTC **không** nằm trong repo này (`.gitignore` chặn sẵn) theo
+> quy định bảo mật. Mọi chỗ dẫn chứng chỉ ghi mã tin `M#####`.

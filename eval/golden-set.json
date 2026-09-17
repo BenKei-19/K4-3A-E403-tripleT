@@ -13,12 +13,12 @@
         {
           "msg_ref": "M21817",
           "loai": "DEADLINE",
-          "vi_sao": ""
+          "vi_sao": "Workshop 02 bắt buộc, 20:00 tối 13/09 — giờ diễn ra buổi học."
         },
         {
           "msg_ref": "M09449",
           "loai": "DEADLINE",
-          "vi_sao": ""
+          "vi_sao": "Hai mốc: công bố ngân hàng đề tài 22:00 13/09 và hạn đăng ký 23:59 20/09."
         }
       ]
     },
@@ -31,7 +31,7 @@
         {
           "msg_ref": "M22827",
           "loai": "DEADLINE",
-          "vi_sao": ""
+          "vi_sao": "Trả lời trong đoạn chat: ngày bắt đầu ghi nhận XP daily standup là 14/9."
         }
       ]
     },
@@ -44,14 +44,20 @@
         {
           "msg_ref": "M41530",
           "loai": "DEADLINE",
-          "vi_sao": ""
+          "vi_sao": "Bản [REMIND] của thông báo onboarding, hạn 21:00 14/9."
         },
         {
           "msg_ref": "M78917",
           "loai": "DEADLINE",
-          "vi_sao": ""
+          "vi_sao": "Khung giờ nộp daily standup và mentor duty để được cộng XP."
+        },
+        {
+          "msg_ref": "M22532",
+          "loai": "DEADLINE",
+          "vi_sao": "Tuyển team QA video, dòng cuối tin có 'Hạn: hết ngày 16/9' — hạn đăng ký."
         }
-      ]
+      ],
+      "_sua_ngay_17_09": "Thêm M22532: tin dài 741 ký tự, dòng cuối có 'Hạn: hết ngày 16/9' nên thuộc định nghĩa (hạn đăng ký). Lần dán nhãn đầu bỏ sót vì chỉ đọc phần đầu tin. Không sửa ket-qua-luot-1.md."
     },
     {
       "guild": "K4-L2-3",
@@ -66,6 +72,45 @@
       "tong_tin": 136,
       "nguoi_dan_nhan": "Huy",
       "muc_quan_trong": []
+    },
+    {
+      "guild": "K4-L3-4",
+      "ngay": null,
+      "_cua_so": "2026-09-12..14 — ngay=null nghĩa là lấy cả 3 ngày",
+      "tong_tin": 515,
+      "nguoi_dan_nhan": "Khánh + Huy (hợp nhất nhãn 3 lát ngày)",
+      "muc_quan_trong": [
+        {
+          "msg_ref": "M21817",
+          "loai": "DEADLINE",
+          "vi_sao": "Workshop 02 bắt buộc, 20:00 tối 13/09 — giờ diễn ra buổi học."
+        },
+        {
+          "msg_ref": "M09449",
+          "loai": "DEADLINE",
+          "vi_sao": "Hai mốc: công bố ngân hàng đề tài 22:00 13/09 và hạn đăng ký 23:59 20/09."
+        },
+        {
+          "msg_ref": "M22827",
+          "loai": "DEADLINE",
+          "vi_sao": "Trả lời trong đoạn chat: ngày bắt đầu ghi nhận XP daily standup là 14/9."
+        },
+        {
+          "msg_ref": "M41530",
+          "loai": "DEADLINE",
+          "vi_sao": "Bản [REMIND] của thông báo onboarding, hạn 21:00 14/9."
+        },
+        {
+          "msg_ref": "M78917",
+          "loai": "DEADLINE",
+          "vi_sao": "Khung giờ nộp daily standup và mentor duty để được cộng XP."
+        },
+        {
+          "msg_ref": "M22532",
+          "loai": "DEADLINE",
+          "vi_sao": "Tuyển team QA video, dòng cuối tin có 'Hạn: hết ngày 16/9' — hạn đăng ký."
+        }
+      ]
     }
   ],
   "_lat_cat": "Mỗi lát = MỘT SERVER + MỘT NGÀY, gộp mọi kênh. Không lọc kênh vì thông báo rải đều 12 kênh, mà học viên chỉ quan tâm 'hôm nay có gì'. Tin của bot đã được loại tự động khỏi đầu vào.",
@@ -73,5 +118,6 @@
   "_meo_dan_nhan": "Lọc nhanh ứng viên: tin có @everyone/@here/[@role] (13 tin toàn pack) hoặc tin dài >200 ký tự (36 tin). Đọc hết các tin đó trước, rồi quét phần còn lại. Nhanh hơn đọc tuần tự 779 tin.",
   "_quy_tac_doi_lich": "BẪY DỄ DÍNH NHẤT. Nếu một mốc bị dời trong ngày (vd Workshop 20:00 rồi đổi sang 21:00): ghi TIN MỚI vào muc_quan_trong, ĐỪNG ghi tin cũ, và ghi mã tin cũ vào trường thay_the_cho. Nếu ghi cả hai thì máy sẽ tính là bot 'bỏ sót' tin cũ — sai hoàn toàn, vì bot cố tình bỏ nó.",
   "_quy_tac_khong_lap": "Một mốc chỉ xuất hiện MỘT lần. Hai tin nói về cùng một hạn thì chỉ ghi tin đầy đủ hơn.",
-  "_dong_bo": "Định nghĩa này phải trùng với biến SYSTEM trong codebase/digest.py. Sửa một bên mà quên bên kia là số đo sai mà không ai biết."
+  "_dong_bo": "Định nghĩa này phải trùng với biến SYSTEM trong codebase/digest.py. Sửa một bên mà quên bên kia là số đo sai mà không ai biết.",
+  "_cua_so": "Lát có ngay=null là CỬA SỔ 3 NGÀY — phạm vi thật của sản phẩm sau khi đổi hướng ngày 17/09. Đáp án của nó là hợp nhất đáp án ba lát ngày của cùng server."
 }

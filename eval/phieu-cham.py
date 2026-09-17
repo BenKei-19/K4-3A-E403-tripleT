@@ -90,6 +90,10 @@ def tao() -> int:
         f.write("  tích tin MỚI, ĐỪNG tích tin cũ. Chỉ vậy thôi.\n\n")
 
         for lat in bo["ngay"]:
+            # Lát cửa sổ 3 ngày (ngay=None) không cần chấm tay: đáp án của nó
+            # là hợp nhất ba lát ngày, chấm lại là chấm trùng.
+            if lat.get("ngay") is None:
+                continue
             tin, _ = tai_tin_nhan(PACK, guild=lat["guild"], ngay=lat["ngay"])
             ung_vien = [t for t in tin if MOC.search(t.noi_dung)]
             tong += len(ung_vien)
@@ -147,11 +151,28 @@ def gom() -> int:
             dang_xet = None
 
     tong = 0
+    cua_so = [l for l in bo["ngay"] if l.get("ngay") is None]
     for lat in bo["ngay"]:
+        if lat.get("ngay") is None:
+            continue                      # gộp ở dưới, không chấm tay
         khoa = (lat["guild"], lat["ngay"])
         lat["muc_quan_trong"] = theo_lat.get(khoa, [])
         tong += len(lat["muc_quan_trong"])
         print(f"   {lat['guild']} {lat['ngay']}: {len(lat['muc_quan_trong'])} mục vàng")
+
+    # Lát cửa sổ 3 ngày: đáp án = hợp nhất các lát ngày của cùng server, để
+    # không phải dán nhãn hai lần cho cùng một tin.
+    for lat in cua_so:
+        gop, da_co = [], set()
+        for ngay_lat in bo["ngay"]:
+            if ngay_lat.get("ngay") is None or ngay_lat["guild"] != lat["guild"]:
+                continue
+            for m in ngay_lat["muc_quan_trong"]:
+                if m["msg_ref"] not in da_co:
+                    da_co.add(m["msg_ref"])
+                    gop.append(m)
+        lat["muc_quan_trong"] = gop
+        print(f"   {lat['guild']} cửa sổ 3 ngày: {len(gop)} mục vàng (hợp nhất)")
 
     GOLDEN.write_text(json.dumps(bo, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"\nĐã ghi {tong} mục vàng vào {GOLDEN.name}")

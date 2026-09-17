@@ -71,7 +71,8 @@ def dang(url: str, ten: str, noi_dung: str) -> tuple[bool, str]:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Đổ tin nhắn vào kênh test qua webhook")
     ap.add_argument("--guild", default="K4-L3-4")
-    ap.add_argument("--ngay", default="2026-09-13")
+    ap.add_argument("--ngay", default="2026-09-13",
+                    help="một ngày 'YYYY-MM-DD', hoặc 'tat-ca' để đổ cả cửa sổ 3 ngày")
     ap.add_argument("--so-tin", type=int, default=0, help="giới hạn số tin, 0 = tất cả")
     ap.add_argument("--that", action="store_true", help="đăng thật (mặc định chỉ thử)")
     a = ap.parse_args()
@@ -84,24 +85,30 @@ def main() -> int:
         print(f"Không thấy {PACK}")
         return 1
 
-    tin, _ = tai_tin_nhan(PACK, guild=a.guild, ngay=a.ngay)
+    # 'tat-ca' = đổ cả cửa sổ 3 ngày, để demo được đúng phạm vi thật của bot
+    ngay_loc = None if a.ngay.lower() in ("tat-ca", "all", "") else a.ngay
+    tin, _ = tai_tin_nhan(PACK, guild=a.guild, ngay=ngay_loc)
+    tin.sort(key=lambda t: (t.ngay, t.gio))      # đăng theo đúng thứ tự thời gian
     if a.so_tin:
         tin = tin[: a.so_tin]
 
-    print(f"\n{a.guild} · ngày {a.ngay} · {len(tin)} tin sẽ được đăng")
+    print(f"\n{a.guild} · ngày {ngay_loc or 'cả 3 ngày'} · {len(tin)} tin sẽ được đăng")
     print(f"Ước tính {len(tin) * NGHI / 60:.1f} phút\n")
 
     if not a.that:
         print("CHẾ ĐỘ THỬ — chưa đăng gì. Xem 5 tin đầu:\n")
         for t in tin[:5]:
-            print(f"  {t.gio} · {t.nguoi}: {' '.join(t.noi_dung.split())[:80]}")
+            print(f"  {t.ngay} {t.gio} · {t.nguoi}: {' '.join(t.noi_dung.split())[:80]}")
         print(f"\nĐăng thật:  python codebase/do-tin-vao-kenh.py --that\n")
         return 0
 
     ok = loi = 0
     for i, t in enumerate(tin, 1):
-        # Đặt tên hiển thị kèm giờ gốc, để kênh test giống kênh thật
-        thanh_cong, ghi_chu = dang(url, f"{t.nguoi} · {t.gio}", t.noi_dung)
+        # Đặt tên hiển thị kèm NGÀY + GIỜ gốc, để kênh test giống kênh thật.
+        # Phải có ngày: cửa sổ của bot là 3 ngày, mà tin đăng lại đều mang dấu
+        # thời gian của hôm nay -> thiếu ngày là bot mất khả năng phân biệt.
+        nhan = f"{t.nguoi} · {t.ngay} {t.gio}" if t.ngay else f"{t.nguoi} · {t.gio}"
+        thanh_cong, ghi_chu = dang(url, nhan[:80], t.noi_dung)
         if thanh_cong:
             ok += 1
         else:

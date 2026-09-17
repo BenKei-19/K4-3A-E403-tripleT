@@ -57,11 +57,15 @@ def main() -> int:
             channel=muc_ngay.get("channel"),
             ngay=muc_ngay.get("ngay"),
         )
-        nhan = f"{muc_ngay.get('ngay', ngay)} {muc_ngay.get('channel', '')}".strip()
+        # ngay=None nghĩa là lát CỬA SỔ 3 NGÀY, không phải thiếu dữ liệu
+        nhan = (f"{muc_ngay.get('ngay') or 'cửa sổ 3 ngày'} "
+                f"{muc_ngay.get('channel', '')}").strip()
         id_co_that = {t.id for t in tin}
 
         vang = {m["msg_ref"] for m in muc_ngay["muc_quan_trong"]}
-        kq = digest(tin, ngay)
+        # Nhãn cửa sổ phải TRÙNG với nhãn chay-test.py dùng, nếu không prompt
+        # khác một chữ là mất cache và tốn thêm một lượt API cho cùng một lát.
+        kq = digest(tin, muc_ngay.get("ngay") or "3 ngày gần nhất")
         tra_ve = [m.message_id for m in kq.muc]
 
         bat_dung = vang & set(tra_ve)

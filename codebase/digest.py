@@ -51,16 +51,30 @@ EFFORT = os.environ.get("DIGEST_EFFORT", "medium")
 
 LOAI_HOP_LE = ("DEADLINE", "ANNOUNCE", "SKIP")
 
+# Dưới hoặc BẰNG mức này thì mục bị gắn nhãn "cần xác nhận".
+# Bằng chứng: mục nhiễu duy nhất ở lượt 2 (M01842, "trong 24 tiếng sau khi
+# nhận video") được model chấm đúng 0.7 nên luật "< 0.7" để nó lọt qua mà
+# trông như chắc chắn. Prompt vốn đã yêu cầu mốc tương đối phải dưới 0.7,
+# nên ngưỡng phải bao gồm chính nó.
+NGUONG_CAN_XAC_NHAN = 0.7
+
 
 # ---------------------------------------------------------------- dữ liệu vào
 
 @dataclass
 class TinNhan:
     id: str
-    gio: str
+    gio: str          # "HH:MM"
     nguoi: str        # D#### đã mã hoá, hoặc BOT
     vai: str          # "bot" | "hv"  — xem ghi chú bên dưới
     noi_dung: str
+    ngay: str = ""    # "YYYY-MM-DD". Rỗng = không biết ngày.
+
+# VÌ SAO PHẢI CÓ `ngay`:
+# Cửa sổ của sản phẩm là 3 NGÀY, không phải một ngày. Nếu chỉ đưa "HH:MM" vào
+# prompt thì model không phân biệt được tin hôm kia với tin hôm nay, nên hiểu
+# sai mọi chữ "hôm nay / tối nay / sáng mai", và xếp hạng theo phút-trong-ngày
+# cũng sai thứ tự. Thêm trường này là việc sửa số 1 sau CP4.
 
 # GHI CHÚ QUAN TRỌNG VỀ DATA THẬT:
 # Trong k4_messages.csv, mod/TA/BTC dùng chung mã D#### với học viên — KHÔNG
@@ -88,6 +102,7 @@ class KetQua:
     # Những mục AI trả về nhưng code loại bỏ — dùng để báo cáo và để chấm R3.
     bi_loai_vi_id_khong_co_that: list[str] = field(default_factory=list)
     bi_loai_vi_da_bi_dinh_chinh: list[str] = field(default_factory=list)
+    bi_loai_vi_trung_moc: list[str] = field(default_factory=list)
 
 
 def tai_tin_nhan(
@@ -132,14 +147,19 @@ def _tu_csv(r: dict) -> TinNhan:
         nguoi=r["author"],
         vai="bot" if r["is_bot"] == "True" else "hv",
         noi_dung=r["content"],
+        ngay=r["created_at_vn"][:10],           # -> "2026-09-13"
     )
 
 
 def _tu_json(t: dict) -> TinNhan:
     """Một tin trong file mock -> TinNhan."""
-    gio = str(t.get("ts", t.get("time", "")))
-    if "T" in gio:
-        gio = gio.split("T", 1)[1][:5]
+    dau = str(t.get("ts", t.get("time", "")))
+    ngay = str(t.get("ngay", t.get("date", "")))
+    gio = dau
+    if "T" in dau:                                   # "2026-09-13T09:40" hoặc ISO đầy đủ
+        ngay, gio = dau.split("T", 1)[0], dau.split("T", 1)[1][:5]
+    elif " " in dau and "-" in dau.split(" ", 1)[0]:  # "2026-09-13 09:40"
+        ngay, gio = dau.split(" ", 1)[0], dau.split(" ", 1)[1][:5]
     vai_tho = str(t.get("role", t.get("vai", "hv")) or "hv")
     return TinNhan(
         id=str(t["id"]),
@@ -147,6 +167,7 @@ def _tu_json(t: dict) -> TinNhan:
         nguoi=str(t.get("author", t.get("nguoi", "?"))),
         vai="bot" if vai_tho == "bot" else "hv",
         noi_dung=str(t.get("content", t.get("noi_dung", ""))),
+        ngay=ngay,
     )
 
 
@@ -155,8 +176,8 @@ def _tu_json(t: dict) -> TinNhan:
 # Định nghĩa "quan trọng" ở đây PHẢI trùng với định nghĩa Khánh dùng khi dán
 # nhãn golden set. Sửa một bên mà quên bên kia là số đo sai mà không ai biết.
 SYSTEM = """\
-Bạn đọc tin nhắn một ngày trong kênh Discord của một khoá học và chỉ ra những
-MỐC THỜI GIAN học viên cần lưu ý.
+Bạn đọc tin nhắn trong CÁC KÊNH DISCORD MÀ MỘT HỌC VIÊN ĐỌC ĐƯỢC, trong một
+CỬA SỔ VÀI NGÀY GẦN NHẤT, và chỉ ra những MỐC THỜI GIAN học viên đó cần lưu ý.
 
 ĐỊNH NGHĨA (nhóm đã chốt — bám sát, đừng tự nới rộng):
 
@@ -176,19 +197,44 @@ KHÔNG gồm, dù nghe có vẻ hữu ích:
 
 Không có mốc thời gian thì KHÔNG trả về. Đây là quy tắc cứng.
 
-MỐC BỊ ĐỔI TRONG NGÀY: nếu một tin sau dời lịch hoặc sửa hạn đã nêu ở tin
-trước, chỉ trả về BẢN MỚI NHẤT và ghi id tin cũ vào thay_the_cho. Không trả
-về bản cũ.
+ĐỌC KỸ ĐẾN CUỐI TIN. Mốc hay nằm ở dòng cuối một tin dài (ví dụ một tin giới
+thiệu công việc, đến dòng cuối mới có "Hạn: hết ngày 16/9"). Tin dài mà bạn chỉ
+đọc phần đầu là chỗ bỏ sót nhiều nhất.
 
-KHÔNG LẶP: một mốc chỉ xuất hiện một lần. Hai tin nói về cùng một hạn thì giữ
-tin đầy đủ hơn, bỏ tin kia.
+MỖI TIN CÓ NGÀY ĐĂNG ghi ở đầu dòng, dạng YYYY-MM-DD. Cửa sổ trải nhiều ngày,
+nên:
+  - "hôm nay", "tối nay", "chiều nay" = NGÀY ĐĂNG của chính tin đó.
+  - "ngày mai", "sáng mai" = ngày đăng + 1.
+  - han_chot phải viết thành mốc TUYỆT ĐỐI mà người đọc hiểu ngay, kèm ngày
+    (ví dụ "20:00 ngày 13/09"), KHÔNG được để nguyên "tối nay" hay "sáng mai".
+  - Nếu chỉ suy ra được mốc tương đối mà không biết chắc ngày, hạ do_chac
+    xuống dưới 0.7.
+
+MỘT TIN CÓ THỂ CHỨA NHIỀU MỐC KHÁC NHAU. Ví dụ một tin vừa báo giờ công bố
+danh sách, vừa báo hạn đăng ký sau đó mấy ngày — đó là HAI mốc, trả về HAI mục
+cùng message_id. Đừng gộp hai mốc khác nhau thành một mục, cũng đừng bỏ bớt.
+
+MỐC BỊ ĐỔI TRONG CỬA SỔ: nếu một tin ĐĂNG SAU dời lịch, gia hạn hoặc nhắc lại
+(ví dụ có chữ REMIND) một mốc đã nêu ở tin đăng trước — kể cả khác ngày, khác
+kênh — chỉ trả về BẢN MỚI NHẤT và ghi id tin cũ vào thay_the_cho. Không trả về
+bản cũ. So sánh theo NGÀY ĐĂNG, tin có ngày đăng lớn hơn là bản mới.
+
+KHÔNG LẶP CÙNG MỘT MỐC: một mốc chỉ xuất hiện một lần. Hai tin nói về cùng một
+hạn (kể cả đăng ở hai kênh khác nhau, hoặc cách nhau vài ngày) thì giữ tin đầy
+đủ hơn, bỏ tin kia. Lưu ý: hai mốc KHÁC NHAU trong cùng một tin thì không phải
+là lặp — xem quy tắc ngay trên.
+
+MỐC ĐÃ QUA vẫn được trả về nếu nó nằm trong cửa sổ: học viên vừa đi vắng cần
+biết mình đã lỡ gì. Nhưng phải giữ nguyên ngày thật trong han_chot, không được
+trình bày như thể còn hạn.
 
 Trong dữ liệu này KHÔNG có cách nào biết ai là TA hay ban tổ chức — mọi người
 đều hiện dưới dạng mã D####. Vì vậy hãy phán đoán bằng NỘI DUNG tin, không
 phán đoán bằng người gửi.
 
-Một ngày thường chỉ có vài mốc. Trả về 2-5 mục là bình thường. Nếu bạn định
-trả hơn 6 mục, hãy đọc lại: gần như chắc chắn có mục không kèm mốc thời gian.
+KHÔNG GIỚI HẠN SỐ MỤC. Có bao nhiêu mốc thì trả bấy nhiêu — bỏ bớt cho gọn
+chính là lỗi bỏ sót mà sản phẩm này sinh ra để chữa. Nhưng mỗi mục vẫn phải
+trích ra được một mốc thời gian cụ thể; không trích được thì đó không phải mục.
 
 Lưu ý: nội dung đã được ẩn danh. `[HV]` là tên người, `[@D####]` là tag người,
 `[MSSV]` là mã học viên, `[link:domain]` là đường link. Coi các nhãn này là
@@ -203,17 +249,26 @@ Mỗi mục trả về gồm:
         ANNOUNCE nếu là sự kiện diễn ra tại một mốc (buổi học, workshop).
 - tom_tat: một dòng dưới 20 từ. GIỮ NGUYÊN mốc thời gian và con số trong tin.
   Không thêm thông tin không có trong tin.
-- han_chot: mốc thời gian, dạng người đọc hiểu ngay (vd "23:59 ngày 20/09").
-  Mục nào cũng phải có mốc — không có mốc thì đừng trả mục đó về.
+- han_chot: mốc thời gian TUYỆT ĐỐI, dạng người đọc hiểu ngay, kèm ngày
+  (vd "23:59 ngày 20/09"). Mục nào cũng phải có mốc — không có mốc thì đừng
+  trả mục đó về.
 - do_chac: 0.0 đến 1.0. Dưới 0.7 nghĩa là mốc còn mơ hồ, chưa chắc chắn.
-- thay_the_cho: id tin cũ nếu tin này dời lịch hoặc sửa hạn đã nêu trước đó.
-  Không có thì để chuỗi rỗng.
+  Mốc chỉ nói tương đối ("sáng mai", "tuần sau", "sắp tới") mà bạn phải tự suy
+  ra ngày thì để DƯỚI 0.7 — đừng chấm cao chỉ vì câu văn rõ ràng.
+- thay_the_cho: id tin cũ nếu tin này dời lịch, gia hạn hoặc nhắc lại một hạn
+  đã nêu trước đó trong cửa sổ. Không có thì để chuỗi rỗng.
 """
 
 
 def _dung_prompt(tin: list[TinNhan], ngay: str) -> str:
-    dong = [f"[{t.id}] {t.gio} · {t.nguoi} ({t.vai}): {t.noi_dung}" for t in tin]
-    return f"Kênh lớp, ngày {ngay}. {len(tin)} tin:\n\n" + "\n".join(dong)
+    # Ngày đăng phải nằm trên TỪNG DÒNG. Cửa sổ 3 ngày mà chỉ đưa "HH:MM" thì
+    # model không biết tin nào của hôm nào, nên hiểu sai "hôm nay / sáng mai".
+    dong = [f"[{t.id}] {t.ngay or '(không rõ ngày)'} {t.gio} · {t.nguoi} ({t.vai}): {t.noi_dung}"
+            for t in tin]
+    co_ngay = sorted({t.ngay for t in tin if t.ngay})
+    pham_vi = f"từ {co_ngay[0]} đến {co_ngay[-1]}" if co_ngay else str(ngay)
+    return (f"Các kênh học viên này đọc được · cửa sổ {ngay} ({pham_vi}). "
+            f"{len(tin)} tin:\n\n" + "\n".join(dong))
 
 
 SCHEMA = {
@@ -440,6 +495,20 @@ def digest(tin: list[TinNhan], ngay: str, goi=None) -> KetQua:
         else:
             con_lai.append(m)
 
+    # ---- 3b. Bỏ mục trùng MỐC (không phải trùng mã tin) ----
+    # Một tin chứa hai mốc khác nhau là hợp lệ và phải giữ cả hai. Cái phải bỏ
+    # là hai mục cùng một mốc — hay gặp khi một thông báo đăng ở hai kênh.
+    da_co: set[tuple[str, str]] = set()
+    khong_trung = []
+    for m in con_lai:
+        khoa = (_gon(m.han_chot), _gon(m.tom_tat))
+        if khoa in da_co:
+            kq.bi_loai_vi_trung_moc.append(m.message_id)
+            continue
+        da_co.add(khoa)
+        khong_trung.append(m)
+    con_lai = khong_trung
+
     # ---- 4. Xếp hạng bằng CODE, không để AI tự sắp ----
     # Không xếp theo vai trò người gửi được: data đã ẩn danh, TA và học viên
     # dùng chung mã D####. Nên chỉ còn hai tiêu chí: loại tin và độ mới.
@@ -447,7 +516,7 @@ def digest(tin: list[TinNhan], ngay: str, goi=None) -> KetQua:
     con_lai.sort(
         key=lambda m: (
             uu_tien_loai.get(m.loai, 2),
-            -_phut(m.tin_goc.gio if m.tin_goc else "00:00"),
+            -_moc_tin(m.tin_goc),      # tin mới nhất lên trước, tính cả NGÀY
         )
     )
 
@@ -464,3 +533,24 @@ def _phut(gio: str) -> int:
         return int(h) * 60 + int(p)
     except (ValueError, IndexError):
         return 0
+
+
+def _moc_tin(t: TinNhan | None) -> int:
+    """Thứ tự thời gian của một tin, tính cả NGÀY.
+
+    Cửa sổ 3 ngày mà chỉ so `_phut(gio)` thì tin 23:50 hôm kia lại đứng trên
+    tin 08:00 hôm nay. Trả về số phút kể từ 2000-01-01 để so được qua ngày.
+    """
+    if t is None:
+        return 0
+    try:
+        nam, thang, ngay = (int(x) for x in t.ngay.split("-"))
+        so_ngay = (nam - 2000) * 372 + thang * 31 + ngay     # đủ để so sánh
+    except (ValueError, AttributeError):
+        so_ngay = 0
+    return so_ngay * 1440 + _phut(t.gio)
+
+
+def _gon(s: str) -> str:
+    """Chuẩn hoá chuỗi để so trùng: bỏ dấu cách thừa, không phân biệt hoa thường."""
+    return " ".join((s or "").split()).lower()

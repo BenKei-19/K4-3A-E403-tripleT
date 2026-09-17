@@ -1,0 +1,28 @@
+{
+  "_note": "Data mock cho prototype Trợ Lý. Tên người là hư cấu, không phải học viên thật.",
+  "guild_id": "1402931755000000001",
+  "channel_id": "1402931755000000042",
+  "channel_name": "lop-k4-3a",
+  "date": "2026-09-16",
+  "timezone": "+07:00",
+  "messages": [
+    { "id": "1801", "ts": "2026-09-16T08:12:00+07:00", "author": "Minh Anh", "role": "student", "content": "mọi người ơi hôm nay có học không nhỉ" },
+    { "id": "1802", "ts": "2026-09-16T08:15:00+07:00", "author": "Quang", "role": "student", "content": "có mà, 19h tối" },
+    { "id": "1803", "ts": "2026-09-16T09:40:00+07:00", "author": "TA Linh", "role": "ta", "pinned": true, "content": "[THÔNG BÁO] Hạn nộp Canvas CP1 là 23:59 hôm nay (16/09). Nộp qua form trong #nop-bai nhé cả nhà." },
+    { "id": "1804", "ts": "2026-09-16T09:41:00+07:00", "author": "Bảo", "role": "student", "content": "ơ em tưởng mai" },
+    { "id": "1805", "ts": "2026-09-16T09:42:00+07:00", "author": "Hà", "role": "student", "content": "chết rồi 😭" },
+    { "id": "1806", "ts": "2026-09-16T10:05:00+07:00", "author": "Duy", "role": "student", "content": "ai có link meet tối qua không cho mình xin" },
+    { "id": "1807", "ts": "2026-09-16T10:30:00+07:00", "author": "Ngọc", "role": "student", "content": "wifi phòng E403 hôm nay lag quá mọi người" },
+    { "id": "1808", "ts": "2026-09-16T11:15:00+07:00", "author": "Coach Nam", "role": "coach", "content": "Buổi review CP1 dời từ thứ 4 sang 20:00 thứ 5 (18/09) nhé. Link meet mình gửi lại trước 1 tiếng." },
+    { "id": "1809", "ts": "2026-09-16T11:20:00+07:00", "author": "Minh Anh", "role": "student", "content": "vâng em cảm ơn anh" },
+    { "id": "1810", "ts": "2026-09-16T12:03:00+07:00", "author": "Tuấn", "role": "student", "content": "trưa nay ăn gì mọi người" },
+    { "id": "1811", "ts": "2026-09-16T12:05:00+07:00", "author": "Bảo", "role": "student", "content": "cơm gà đi" },
+    { "id": "1812", "ts": "2026-09-16T13:47:00+07:00", "author": "TA Linh", "role": "ta", "content": "Nhắc lại: điểm danh hôm nay có tính XP. Mọi người react ✅ vào tin điểm danh trong #diem-danh trước 21:00 nhé." },
+    { "id": "1813", "ts": "2026-09-16T14:20:00+07:00", "author": "Hà", "role": "student", "content": "em react rồi ạ" },
+    { "id": "1814", "ts": "2026-09-16T15:02:00+07:00", "author": "Duy", "role": "student", "content": "có ai làm xong phần eval chưa chỉ mình với" },
+    { "id": "1815", "ts": "2026-09-16T16:30:00+07:00", "author": "TA Linh", "role": "ta", "content": "À mình đính chính: hạn nộp Canvas CP1 lùi sang 23:59 ngày mai (17/09) nhé, do form bị lỗi sáng nay. Xin lỗi cả nhà." },
+    { "id": "1816", "ts": "2026-09-16T16:31:00+07:00", "author": "Quang", "role": "student", "content": "tuyệt vời ạ" },
+    { "id": "1817", "ts": "2026-09-16T17:45:00+07:00", "author": "Ngọc", "role": "student", "content": "mai ai đi sớm giữ chỗ với mình không" },
+    { "id": "1818", "ts": "2026-09-16T18:20:00+07:00", "author": "Tuấn", "role": "student", "content": "👍" }
+  ]
+}

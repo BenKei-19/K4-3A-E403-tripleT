@@ -55,3 +55,13 @@ temp/
 
 recordings/
 *.mkv
+README2.md
+# Bản đọc tạm khi dán nhãn — chứa nội dung data pack, không được lên repo
+eval/doc-tam/
+
+# Bộ nhớ đệm lời gọi API — chứa nội dung data pack, không lên repo
+eval/dem-api/
+
+# Goi zip chia viec cho tung nguoi, khong can len repo
+goi-tripleT/
+*.zip

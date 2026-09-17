@@ -1,0 +1,28 @@
+{
+  "_note": "Nhãn vàng do nhóm dán tay — dùng để đo bỏ sót và nhiễu. 3 mục dưới đây BẮT BUỘC phải có trong digest; mọi id khác là tin trò chuyện, không được đưa vào.",
+  "date": "2026-09-16",
+  "must_include": [
+    {
+      "message_id": "1815",
+      "label": "DEADLINE",
+      "why": "Hạn nộp CP1, đã đính chính lùi sang 17/09. Bỏ sót mục này là lỗi nặng nhất.",
+      "supersedes": "1803",
+      "note": "Bot phải ưu tiên tin đính chính, không được trả tin 1803 như thể còn hiệu lực."
+    },
+    {
+      "message_id": "1808",
+      "label": "ANNOUNCE",
+      "why": "Buổi review CP1 đổi lịch sang 20:00 thứ 5 (18/09)."
+    },
+    {
+      "message_id": "1812",
+      "label": "ANNOUNCE",
+      "why": "Điểm danh tính XP, hạn react trước 21:00 hôm nay."
+    }
+  ],
+  "must_exclude": ["1801","1802","1804","1805","1806","1807","1809","1810","1811","1813","1814","1816","1817","1818"],
+  "metrics": {
+    "bo_sot": "số mục trong must_include không xuất hiện trong digest / tổng must_include",
+    "nhieu": "số mục trong digest thuộc must_exclude / tổng số mục digest trả về"
+  }
+}

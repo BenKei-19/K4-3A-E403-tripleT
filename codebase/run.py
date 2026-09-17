@@ -24,17 +24,19 @@ if sys.platform == "win32":
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from digest import ChuaCoKey, digest, tai_tin_nhan, ten_provider  # noqa: E402
+from digest import (ChuaCoKey, NGUONG_CAN_XAC_NHAN, digest,  # noqa: E402
+                    tai_tin_nhan, ten_provider)
 
 GOC = Path(__file__).resolve().parent.parent
 PACK = GOC / "discord-pack" / "k4_messages.csv"
 MOCK = GOC / "data" / "messages-mock.json"
 
-# Lát cắt mặc định: MỘT SERVER, MỘT NGÀY, GỘP MỌI KÊNH.
-# Không lọc kênh vì học viên quan tâm "hôm nay có gì", không quan tâm tin nằm
-# ở kênh nào — mà thông báo trong pack lại rải đều 12 kênh.
-# K4-L3-4 · 13/09: 129 tin người, ~5k token. Cỡ vừa đẹp để quay video.
-LAT_MAC_DINH = dict(guild="K4-L3-4", channel=None, ngay="2026-09-13")
+# Lát cắt mặc định: MỘT SERVER, CẢ CỬA SỔ 3 NGÀY, GỘP MỌI KÊNH — đúng phạm vi
+# thật của sản phẩm. Không lọc kênh vì mốc rải ở 5 kênh khác nhau; không lọc một
+# ngày vì 2/5 mốc còn hiệu lực lại được đăng từ ngày trước (spec §2).
+# K4-L3-4 · 12–14/09: 515 tin người. Muốn lát nhẹ để quay video thì thêm
+# --ngay 2026-09-13 (129 tin).
+LAT_MAC_DINH = dict(guild="K4-L3-4", channel=None, ngay=None)
 
 XANH = "\033[96m"
 VANG = "\033[93m"
@@ -48,7 +50,8 @@ def main() -> int:
     parser.add_argument("--file", default=None, help="file dữ liệu (mặc định: discord-pack)")
     parser.add_argument("--guild", default=LAT_MAC_DINH["guild"])
     parser.add_argument("--channel", default=LAT_MAC_DINH["channel"])
-    parser.add_argument("--ngay", default=LAT_MAC_DINH["ngay"])
+    parser.add_argument("--ngay", default=LAT_MAC_DINH["ngay"],
+                        help="một ngày YYYY-MM-DD; bỏ trống = cả cửa sổ 3 ngày")
     parser.add_argument("--mock", action="store_true", help="chạy trên data mock tự sinh")
     args = parser.parse_args()
 
@@ -61,14 +64,16 @@ def main() -> int:
             print(f"{VANG}Không thấy {duong_dan}{HET}")
             print(f"{XAM}Chạy thử trên mock: python codebase/run.py --mock{HET}\n")
             return 1
-        tin, ngay = tai_tin_nhan(duong_dan, guild=args.guild, channel=args.channel, ngay=args.ngay)
+        tin, ngay = tai_tin_nhan(duong_dan, guild=args.guild,
+                                 channel=args.channel, ngay=args.ngay)
+        ngay = args.ngay or "3 ngày gần nhất"
         nguon = args.guild + (f" · {args.channel}" if args.channel else " · mọi kênh")
 
     if not tin:
         print(f"{VANG}Lát cắt này không có tin nào. Thử --ngay / --channel khác.{HET}\n")
         return 1
 
-    print(f"\n{XAM}Đọc {len(tin)} tin nhắn · {nguon} · ngày {ngay}{HET}")
+    print(f"\n{XAM}Đọc {len(tin)} tin nhắn · {nguon} · {ngay}{HET}")
     print(f"{XAM}Đang hỏi {ten_provider()}...{HET}", flush=True)
 
     bat_dau = time.time()
@@ -79,18 +84,20 @@ def main() -> int:
         return 1
     giay = time.time() - bat_dau
 
-    print(f"\n{DAM}Hôm nay bạn cần lưu ý {len(kq.muc)} việc{HET}\n")
+    print(f"\n{DAM}Bạn cần lưu ý {len(kq.muc)} việc{HET}\n")
 
     for i, m in enumerate(kq.muc, 1):
         mau = VANG if m.loai == "DEADLINE" else XANH
-        canh_bao = f"  {VANG}[cần xác nhận]{HET}" if m.do_chac < 0.7 else ""
+        canh_bao = f"  {VANG}[cần xác nhận]{HET}" if m.do_chac <= NGUONG_CAN_XAC_NHAN else ""
         print(f"  {mau}{i}. {m.tom_tat}{HET}{canh_bao}")
         if m.han_chot:
             print(f"     {DAM}Hạn: {m.han_chot}{HET}")
         if m.thay_the_cho:
             print(f"     {XAM}(đính chính cho tin {m.thay_the_cho}){HET}")
         if m.tin_goc:
-            print(f"     {XAM}tin gốc [{m.message_id}] {m.tin_goc.gio} · {m.tin_goc.nguoi}{HET}")
+            # Cửa sổ nhiều ngày nên phải in cả NGÀY, không chỉ giờ
+            khi = f"{m.tin_goc.ngay} {m.tin_goc.gio}".strip()
+            print(f"     {XAM}tin gốc [{m.message_id}] {khi} · {m.tin_goc.nguoi}{HET}")
         print()
 
     print(f"{XAM}{'-' * 58}{HET}")
@@ -103,6 +110,9 @@ def main() -> int:
     if kq.bi_loai_vi_da_bi_dinh_chinh:
         print(f"{XAM}Bỏ {len(kq.bi_loai_vi_da_bi_dinh_chinh)} tin đã bị đính chính: "
               f"{kq.bi_loai_vi_da_bi_dinh_chinh}{HET}")
+    if kq.bi_loai_vi_trung_moc:
+        print(f"{XAM}Bỏ {len(kq.bi_loai_vi_trung_moc)} mục trùng mốc: "
+              f"{kq.bi_loai_vi_trung_moc}{HET}")
     print()
     return 0
 

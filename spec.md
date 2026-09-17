@@ -175,7 +175,7 @@ Cost-of-error lệch hẳn về một phía: **bỏ sót một hạn nộp thì 
 | 1 | ① Không căn cứ | Model trả `message_id` không có trong đầu vào | Link chết, mất tin tưởng | Guardrail loại mục đó trước khi hiển thị | Chưa — TC09, TC10 đều ĐẠT |
 | 2 | ① Không căn cứ | Model thêm chi tiết không có trong tin (giờ, địa điểm) | Học viên đi sai giờ | Prompt bắt "giữ nguyên mốc và con số trong tin", `tom_tat` dưới 20 từ | Chưa đo riêng — **khai thiếu** |
 | 3 | ① Không căn cứ | Cửa sổ 3 ngày nhưng prompt chỉ đưa giờ `HH:MM`, không đưa ngày → model không phân biệt được tin hôm kia với tin hôm nay | Hiểu sai "hôm nay", "tối nay", "sáng mai"; xếp hạng theo phút trong ngày cũng sai thứ tự | **ĐÃ SỬA 17/09** — `TinNhan` có thêm trường `ngay`; mỗi dòng prompt mang `YYYY-MM-DD`; prompt bắt quy mọi mốc tương đối về ngày tuyệt đối; xếp hạng dùng `_moc_tin()` tính cả ngày | Phát hiện khi rà lại code lúc chốt spec, sửa ngay trước khi nộp |
-| 4 | ② Độ chắc thấp | Tin nêu mốc mơ hồ ("sáng mai", "tuần sau") | Học viên hiểu sai hạn | Trường `do_chac`; dưới 0.7 gắn nhãn "cần xác nhận". **Siết 17/09**: prompt nêu thẳng "mốc chỉ nói tương đối (sáng mai, tuần sau) thì để DƯỚI 0.7" | **Rồi** — `M35849` "sáng mai" từng được chấm `do_chac = 0.9`; sau khi siết prompt **phải đo lại ở lượt 2** |
+| 4 | ② Độ chắc thấp | Tin nêu mốc mơ hồ ("sáng mai", "tuần sau") | Học viên hiểu sai hạn | Trường `do_chac`; **`<= NGUONG_CAN_XAC_NHAN` (0.7)** gắn nhãn "cần xác nhận". Prompt nêu thẳng "mốc tương đối thì để DƯỚI 0.7" | **Rồi, và đã đo.** Lượt 2: `M01842` ("trong 24 tiếng sau khi nhận video") được chấm **đúng 0.7** → luật cũ `< 0.7` để nó lọt qua như thể chắc chắn. **Đã sửa ngưỡng thành `<=`** |
 | 5 | ② Độ chắc thấp | Một tin chứa **hai mốc khác nhau** (`M09449`: công bố 22:00 13/09 + hạn đăng ký 23:59 20/09) | Hai mục cùng một `msg_id`, trông như lặp | **ĐÃ SỬA 17/09** — prompt nêu rõ "một tin có thể chứa nhiều mốc, trả nhiều mục cùng `message_id`"; code chống trùng theo **mốc** (`han_chot` + `tom_tat`), không theo mã tin; TC12 đổi sang `khong_trung_moc` | **Rồi — TC12 KHÔNG ĐẠT ở lượt 1.** Chỗ sai là **điều kiện chấm**, không phải bot — xem §7 |
 | 6 | ③ Ngoài phạm vi | Thông báo có giọng chính thức, tag `@role`, nhưng không kèm mốc nào | Câu trả lời có rác, người đọc ngừng tin | Prompt: không trích được mốc thì không phải mục. **Thêm 17/09**: "ĐỌC KỸ ĐẾN CUỐI TIN — mốc hay nằm ở dòng cuối một tin dài" | TC08 ghi KHÔNG ĐẠT ở lượt 1, **nhưng nhãn vàng sai**: `M22532` có "Hạn: hết ngày 16/9" ở dòng cuối — xem §7 |
 | 7 | ③ Ngoài phạm vi | Câu hỏi của học viên có lẫn chữ "deadline", "23:59" (`M20574`, `M40677`) | Nhầm câu hỏi thành thông báo | Prompt nêu rõ câu hỏi không tính | Đã kiểm — TC06, TC07 **ĐẠT** |
@@ -189,7 +189,8 @@ Cost-of-error lệch hẳn về một phía: **bỏ sót một hạn nộp thì 
 | 15 | Vận hành | Danh sách dài hơn 25 field → Discord từ chối embed | Mất câu trả lời | Chia 10 mục mỗi embed, gửi nhiều embed | Đã xử lý |
 | 16 | Vận hành | Lệnh `/luuy` quá 3 giây là Discord huỷ lượt tương tác | Người dùng thấy "ứng dụng không phản hồi" | `defer(ephemeral=True, thinking=True)` ngay trước khi gọi AI | Đã xử lý |
 | 17 | Vận hành | Hết hạn mức API (Gemini free tier) | Bot im giữa buổi demo | Chờ đúng `retryDelay` rồi thử lại; **bộ nhớ đệm** kết quả theo prompt | **Rồi — hết lượt lúc 12:30 ngày 17/09** |
-| 18 | Vận hành | Kết quả dao động giữa các lượt chạy cùng một lát | Số đo không lặp lại được | `temperature = 0` + cache; vẫn còn dao động | **Rồi** — **khai thiếu** |
+| 18 | Vận hành | Cửa sổ rộng (779 tin) làm model **trôi**: trả thêm 24 mục `SKIP` toàn tin trò chuyện, dù prompt nói "không có mốc thì KHÔNG trả về" | Tốn token và tiền mỗi lời gọi; là mầm của lỗi nhiễu nếu model đổi nhãn | Code lọc sạch `SKIP` trước khi hiển thị nên **người dùng không thấy mục nào**; nhưng schema vẫn còn nhãn `SKIP` làm đường thoát cho model | **Rồi — quan sát ở lượt 2** trên lát 779 tin. Cách sửa đã biết (bỏ `SKIP` khỏi enum) nhưng **chưa làm**: đổi schema là đổi đầu vào, phải có một lượt đo riêng mới biết có lợi hay hại |
+| 19 | Vận hành | Kết quả dao động giữa các lượt chạy cùng một lát | Số đo không lặp lại được | `temperature = 0` + cache; vẫn còn dao động | **Rồi** — **khai thiếu** |
 
 ---
 
@@ -284,9 +285,25 @@ Cùng lý do đó, `eval/golden-set.json` được bổ sung `M22532` vào đáp
 | Lượt | Giờ | Phạm vi | Đổi gì | Số case | Đạt | Tỉ lệ | Qua bar? |
 |---|---|---|---|---|---|---|---|
 | 1 | 14:2x 17/09 | 1 server · 1 ngày · mọi kênh · trả lời công khai | bản đầu | 14 | 12 | **85%** | **Đạt** (≥80%, 0 link bịa; vế "đúng kênh" chưa áp dụng được ở phạm vi này) |
-| 2 | *chưa chạy tính đến CP4* | 3 ngày · theo quyền kênh người hỏi · trả lời riêng | Đưa ngày vào prompt · đính chính theo cửa sổ · chống trùng theo mốc · siết ngưỡng `do_chac` · cổng lọc ngoài phạm vi · nút báo sai. Thêm TC15–TC25, sửa điều kiện TC08 và TC12 | 20 tự động + 5 tay | — | — | — |
+| 2 | 06:0x 18/09 | 3 ngày · theo quyền kênh người hỏi · trả lời riêng | Đưa ngày vào prompt · đính chính theo cửa sổ · chống trùng theo mốc · siết ngưỡng `do_chac` · cổng lọc ngoài phạm vi · nút báo sai. Thêm TC15–TC25, sửa điều kiện TC08 và TC12 | 20 tự động *(5 case tay chưa bấm)* | **20** | **100%** | **Đạt** — 0 mã bịa, 0 mục ngoài kênh người hỏi |
 
-> **Vì sao lượt 2 chưa có số tính đến CP4.** Sửa prompt là đổi đầu vào của model, nên **mọi kết quả đã lưu trong `eval/dem-api/` đều không dùng lại được** — chạy lại cả bộ là 6 lời gọi API mới. Free tier Gemini giới hạn 20 lời gọi/ngày/model và nhóm đã chạm trần một lần lúc 12:30 ngày 17/09 (§5 dòng 17), nên thời điểm tiêu 6 lượt này phải cân với buổi demo. Đường chạy đã được kiểm bằng model giả (20/20 case chạy trót lọt, **không phải số đo chất lượng** — chỉ chứng minh bộ test không gãy). Lệnh để chạy khi có lượt: `python eval/chay-test.py --luot 2`.
+> **Đọc con số 100% cho đúng.** Hai trong 20 case (TC08, TC12) đã được **sửa điều kiện chấm** trước lượt này, vì điều kiện cũ sai chứ không phải bot sai (lý do ngay trên). **Chấm theo điều kiện cũ thì lượt 2 là 18/20 = 90%**, không phải 100%. Nhóm ghi cả hai số. Ngoài ra **5 case chạy tay chưa bấm** (TC15–TC18, TC25), nên 100% này chỉ nói về phần tự động.
+>
+> Bảng đầy đủ: [`eval/ket-qua-luot-2.md`](eval/ket-qua-luot-2.md) (sinh tự động).
+
+**Số bỏ sót / nhiễu trên golden set** — `python eval/eval.py`, chạy cùng lượt 2
+
+| Lát | Mốc đã dán nhãn | Bắt đúng | Bỏ sót | Nhiễu |
+|---|---|---|---|---|
+| K4-L3-4 · 12/09 | 1 | 1 | 0 | 0 |
+| K4-L3-4 · 13/09 | 2 | 2 | 0 | 0 |
+| K4-L3-4 · 14/09 | 3 | 3 | 0 | **1** |
+| **K4-L3-4 · cửa sổ 3 ngày (515 tin)** — *phạm vi thật của sản phẩm* | **6** | **6** | **0** | **0** |
+| **TỔNG** | **12** | **12** | **0** | **1** |
+
+> **Mục nhiễu duy nhất là `M01842`** — *"các bạn sẽ feedback trong 24 tiếng sau khi nhận video nhé"*. Đây là hạn **tương đối và có điều kiện**: chỉ áp dụng nếu bạn đã vào team QA, và không neo vào mốc tuyệt đối nào. Model chấm `do_chac` đúng **0.7**, mà luật gắn nhãn lúc đó là `< 0.7` nên nó lọt qua mà **trông như chắc chắn**. Đã sửa ngưỡng thành `<= 0.7` (`NGUONG_CAN_XAC_NHAN` trong `digest.py`) — mục này giờ hiện kèm "cần xác nhận" thay vì biến mất, đúng hướng conditional ở §4.
+>
+> Đáng chú ý: **trên lát cửa sổ 3 ngày — đúng phạm vi sản phẩm chạy thật — bỏ sót 0 và nhiễu 0**. Mục nhiễu chỉ xuất hiện ở lát một ngày.
 
 Hai case trượt ở lượt 1 là TC08 và TC12 — cả hai đã được phân tích ngay trên, và cả hai đều là lỗi của điều kiện chấm chứ không phải của bot.
 
@@ -322,13 +339,12 @@ Hai case trượt ở lượt 1 là TC08 và TC12 — cả hai đã được ph�
 6. ✅ `do-tin-vao-kenh.py` giữ **ngày** gốc khi đổ tin, và đổ được cả 3 ngày (`--ngay tat-ca`) để demo đúng phạm vi.
 
 **Còn lại, theo thứ tự ưu tiên**
-1. **Chạy `python eval/chay-test.py --luot 2`** khi có lại hạn mức API → điền bảng kết quả §7. Đây là việc duy nhất chặn con số của lượt 2.
-2. Chạy 5 case tay (TC15–TC18, TC25) trong server test — cần 2 tài khoản ở 2 kênh đội khác nhau.
-3. Điền 2 mã học viên willing user vào mục ngay dưới.
-4. Đo lại ngưỡng `do_chac` sau khi siết prompt (§5 dòng 4) — kiểm bằng `M35849` ("sáng mai") có bị hạ xuống dưới 0.7 không.
-5. Thử prompt injection (§5 dòng 9) — chỗ khai thiếu còn lại.
+1. **Bấm 5 case chạy tay** (TC15–TC18, TC25) trong server test — cần 2 tài khoản ở 2 kênh đội khác nhau. Đây là việc duy nhất còn chặn con số đầy đủ của lượt 2.
+2. Điền 2 mã học viên willing user vào mục ngay dưới.
+3. Bỏ `SKIP` khỏi schema rồi chạy một lượt đo riêng xem số mục thô có giảm không (§5 dòng 18).
+4. Thử prompt injection (§5 dòng 9) — chỗ khai thiếu còn lại.
 
-**Willing users** *Đỗ Lê Việt Anh, Trần Thu Phương*
+**Willing users** *(khai từ CP1: 6/12 người khảo sát để lại tên + mã học viên; danh sách giữ trong nhóm, không đưa lên slide)*
 
 > **[CẦN NHÓM ĐIỀN 2 MÃ HỌC VIÊN]** — lấy từ bảng trả lời khảo sát, ghi dạng mã học viên.
 
@@ -363,3 +379,7 @@ Giao task thật cho 5 người ngoài nhóm, **mỗi người một tài khoả
 | 17/09 ~19:00 | Bộ test 14 → **25 case** (20 tự động, 5 tay); `chay-test.py` chạy được lát cửa sổ 3 ngày, tách case chạy tay, **từ chối ghi đè lượt 1** | Yêu cầu ≥20 case; và phạm vi mới (3 ngày, riêng tư, cá nhân hoá) chưa có case nào |
 | 17/09 ~19:05 | `golden-set.json`: thêm `M22532` vào đáp án lát 14/09, thêm lát **cửa sổ 3 ngày** | Nhãn cũ bỏ sót vì người dán chỉ đọc đầu tin dài; và đáp án phải có lát đúng phạm vi thật |
 | 17/09 ~19:10 | `do-tin-vao-kenh.py` giữ **ngày** gốc trong tên hiển thị, thêm `--ngay tat-ca` | Tin đổ lại mang dấu thời gian hôm nay; không giữ ngày gốc thì không demo được cửa sổ 3 ngày |
+| 17/09 20:42 | Chạy lượt 2 lần đầu — xong 1/6 lát rồi dừng vì free tier bắt chờ 25–65 giây mỗi lần 429 | Ghi nhận để biết chi phí thật của một lượt đo, không phải để báo số |
+| 17/09 20:55 | Ghi nhận lỗi mới: cửa sổ rộng làm model trả thêm **24 mục `SKIP`** (§5 dòng 18) | Code lọc sạch nên người dùng không thấy, nhưng schema còn nhãn `SKIP` là đường thoát — cần một lượt đo riêng mới dám sửa |
+| 18/09 ~06:05 | **Chạy xong lượt 2**: 20/20 case tự động ĐẠT · golden set bỏ sót 0, nhiễu 1, link bịa 0 | `eval/ket-qua-luot-2.md`. Chấm theo điều kiện cũ thì 18/20 — nhóm ghi cả hai số |
+| 18/09 ~06:15 | Ngưỡng "cần xác nhận" đổi từ `< 0.7` thành **`<= 0.7`** (`NGUONG_CAN_XAC_NHAN`) | Mục nhiễu duy nhất của lượt 2 (`M01842`) được chấm **đúng 0.7** nên luật cũ để nó hiện ra như chắc chắn. Sửa ngưỡng thì nó hiện kèm "cần xác nhận" thay vì bị giấu đi |

@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Trợ Lý Kute — slide pitch</title>
+<style>
+  /* Nguồn của demo-slides.pdf. Xuất lại:
+     chrome --headless=new --no-pdf-header-footer
+            --print-to-pdf=demo-slides.pdf design/demo-slides.html          */
+  @page { size: 13.333in 7.5in; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+         color: #14201c; background: #fff; -webkit-print-color-adjust: exact;
+         print-color-adjust: exact; }
+
+  .s { width: 13.333in; height: 7.5in; padding: 0.62in 0.8in 0.5in;
+       page-break-after: always; position: relative; overflow: hidden;
+       display: flex; flex-direction: column; }
+  .s:last-child { page-break-after: auto; }
+
+  .kicker { font-size: 12.5pt; letter-spacing: .09em; text-transform: uppercase;
+            color: #6b7f77; font-weight: 600; }
+  h1 { font-size: 34pt; line-height: 1.12; margin: .08in 0 .12in; font-weight: 700;
+       letter-spacing: -.01em; }
+  h2 { font-size: 25pt; line-height: 1.15; margin: .05in 0 .18in; font-weight: 700;
+       letter-spacing: -.01em; }
+  p  { font-size: 14pt; line-height: 1.45; margin: 0 0 .1in; }
+  .lead { font-size: 17pt; line-height: 1.42; color: #2c3d37; }
+  .sm { font-size: 11.5pt; color: #5d706a; line-height: 1.4; }
+  b, strong { color: #0f1a16; }
+  .g { color: #2f6f5a; } .o { color: #b4612c; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: .92em;
+         background: #eef3f1; padding: .02in .06in; border-radius: 3px; }
+
+  .num-row { display: flex; gap: .28in; margin: .1in 0 .2in; }
+  .num { flex: 1; border: 1.5px solid #dbe5e1; border-radius: 9px;
+         padding: .26in .22in .28in; background: #f7faf9; }
+  .num .big { font-size: 34pt; font-weight: 700; line-height: 1; letter-spacing: -.02em; }
+  .num .lbl { font-size: 11.5pt; margin-top: .1in; line-height: 1.42; color: #475c55; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12pt; }
+  th { text-align: left; font-size: 10.5pt; text-transform: uppercase;
+       letter-spacing: .06em; color: #6b7f77; padding: 0 .12in .07in 0;
+       border-bottom: 1.5px solid #dbe5e1; font-weight: 600; white-space: nowrap; }
+  td:first-child { white-space: nowrap; }
+  td.wrap:first-child { white-space: normal; }
+  td { padding: .085in .12in .085in 0; border-bottom: 1px solid #edf2f0;
+       vertical-align: top; line-height: 1.38; }
+  td.tick { color: #2f6f5a; font-weight: 700; white-space: nowrap; }
+  td.cross { color: #b4612c; font-weight: 700; white-space: nowrap; }
+
+  .two { display: flex; gap: .42in; flex: 1; min-height: 0; }
+  .col { flex: 1; min-width: 0; }
+
+  .card { border: 1.5px solid #dbe5e1; border-radius: 9px; padding: .18in .22in;
+          background: #f7faf9; margin-bottom: .14in; }
+  .card h3 { margin: 0 0 .06in; font-size: 13.5pt; }
+  .card p { font-size: 12pt; margin: 0; color: #3d514b; line-height: 1.42; }
+
+  ul { margin: .04in 0 .1in; padding-left: .22in; }
+  li { font-size: 13pt; line-height: 1.5; margin-bottom: .05in; }
+  li::marker { color: #2f6f5a; }
+
+  .quote { border-left: 3px solid #2f6f5a; padding: .04in 0 .04in .17in;
+           font-size: 12.5pt; line-height: 1.4; color: #2c3d37; margin: .1in 0; }
+  .quote .src { display: block; font-size: 10.5pt; color: #6b7f77; margin-top: .04in; }
+
+  .foot { position: absolute; left: .8in; right: .8in; bottom: .3in;
+          display: flex; justify-content: space-between;
+          font-size: 9.5pt; color: #93a49e; border-top: 1px solid #edf2f0;
+          padding-top: .08in; }
+
+  .chat { background: #2b2f36; border-radius: 9px; padding: .16in .2in; color: #dfe5e2;
+          font-size: 11pt; line-height: 1.45; }
+  .chat .who { color: #8fd0b8; font-weight: 600; }
+  .chat .dim { color: #9aa7a2; }
+  .chat .hit { color: #ffcf9b; font-weight: 600; }
+  .chat .eph { display: inline-block; font-size: 9pt; color: #9aa7a2;
+               border: 1px solid #4a515a; border-radius: 4px; padding: 0 .05in; }
+</style>
+</head>
+<body>
+
+<!-- ─────────────────────────── 1 · MỞ ─────────────────────────── -->
+<section class="s">
+  <div class="kicker">Nhóm tripleT · Lớp 3A · Phòng E403</div>
+  <h1>Trợ Lý Kute<br><span class="g">hỏi một câu, biết mình còn sót việc gì</span></h1>
+
+  <p class="lead" style="max-width:9.8in">
+    Bạn hỏi bot: <b>“có gì quan trọng tôi cần biết không?”</b><br>
+    Bot đọc hết các kênh <b>bạn vào được</b>, trong <b>3 ngày gần đây</b>, rồi
+    <b>nhắn riêng cho mình bạn</b>: còn việc gì phải làm, hạn lúc nào, tin gốc nằm ở đâu.
+  </p>
+
+  <div class="num-row" style="margin-top:.24in">
+    <div class="num"><div class="big o">85%</div>
+      <div class="lbl">bạn nào cũng chỉ hay vào <b>đúng 1 kênh</b> (171 / 201 người)<br>
+        → gửi chung một bản tin cho cả lớp thì không đúng với ai cả</div></div>
+    <div class="num"><div class="big o">88%</div>
+      <div class="lbl">chữ trong kênh đông nhất là <b>do bot nói ra giữa kênh</b><br>
+        → chính bot đang làm kênh lớp bị ngập</div></div>
+    <div class="num"><div class="big o">40%</div>
+      <div class="lbl">việc còn hạn nhưng <b>báo từ hôm trước</b> (2 trong 5)<br>
+        → chỉ đọc tin hôm nay là sót mất</div></div>
+  </div>
+
+  <p class="sm" style="margin-top:.1in; font-size:12.5pt">
+    <b>Bot này lớp đang dùng rồi.</b> Bọn em không làm bot mới — chỉ sửa lại cách nó trả lời.
+    Trong 3 ngày tin nhắn này, cứ 10 tin học viên gửi thì có 4 tin là gọi bot.
+  </p>
+  <div class="foot"><span>1 / 6 · Mở đầu</span><span>Mọi con số đếm từ tin nhắn thật BTC cho · 1.092 tin · 2 server · 3 ngày</span></div>
+</section>
+
+<!-- ─────────────────────────── 2 · VẤN ĐỀ ─────────────────────────── -->
+<section class="s">
+  <div class="kicker">Vấn đề</div>
+  <h2>Tin đã báo rồi, mà vẫn phải đi hỏi lại</h2>
+
+  <div class="two">
+    <div class="col">
+      <p class="sm" style="margin-bottom:.1in"><b>Bọn em hỏi 12 bạn trong lớp, ngày 16/09</b></p>
+      <table>
+        <tr><td><b>11/12</b></td><td class="wrap">không chắc thì tự đi tìm lại: hỏi bạn bè (6) · nhắn thầy cô (5) · cuộn lại tin cũ (4)</td></tr>
+        <tr><td><b>6/12</b></td><td class="wrap">từng bị bot trả lời sai, hoặc trả lời mà không chắc đúng</td></tr>
+        <tr><td><b>6/7</b></td><td class="wrap">lần gần nhất hỏi bot về hạn nộp là <b>hỏng</b>: 3 lần dài dòng · 2 lần sai · 1 lần đoán bừa</td></tr>
+      </table>
+
+      <p class="sm" style="margin:.2in 0 .1in"><b>Bọn em đếm trên 1.092 tin nhắn thật</b></p>
+      <table>
+        <tr><td><b>2,7%</b></td><td class="wrap">tin có nhắc tới ngày giờ (21 trong 779 tin) — còn lại là chuyện trò</td></tr>
+        <tr><td><b>5 kênh</b></td><td class="wrap">là số kênh có chứa việc phải làm — đọc mỗi một kênh là thiếu</td></tr>
+        <tr><td><b>4 tin</b></td><td class="wrap">là tất cả những gì kênh thông báo đăng trong 3 ngày — <b>kênh ít tin nhất lại là kênh quan trọng nhất</b></td></tr>
+      </table>
+    </div>
+
+    <div class="col">
+      <p class="sm" style="margin-bottom:.1in"><b>Bốn tin thật, mỗi tin một kiểu bị sót</b></p>
+
+      <div class="quote">“Ngân hàng đề tài chính thức sẽ được công khai lúc 22h00 hôm nay”
+        <span class="src">Tin đăng <b>13/09</b>, nhưng hạn đăng ký là <b>20/09</b>.
+        Ai hỏi ngày 14 mà bot chỉ đọc tin hôm đó thì mất luôn cái hạn này.</span></div>
+
+      <div class="quote">“⏰ Hạn: hết ngày 16/9.”
+        <span class="src">Nằm ở <b>dòng cuối cùng</b> của một tin rất dài. Lướt nhanh là không thấy.</span></div>
+
+      <div class="quote">“ngày bắt đầu ghi nhận XP daily standup là 14/9 nhé”
+        <span class="src">Một câu trả lời lọt thỏm giữa đoạn chat, đăng trước 2 ngày.</span></div>
+
+      <div class="quote">Cùng một thông báo, 2 ngày sau <b>đăng lại và đổi hạn</b>
+        <span class="src">Chính chương trình cũng nhắc lại trong vòng 3 ngày.
+        Bot phải biết cái nào là bản mới.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>2 / 6 · Vấn đề</span><span>spec.md §1 — ai cũng chạy lại được mấy con số này bằng script trong repo</span></div>
+</section>
+
+<!-- ─────────────────────────── 3 · CÁCH LÀM ─────────────────────────── -->
+<section class="s">
+  <div class="kicker">Cách làm</div>
+  <h2>Ba điều bọn em chọn — mỗi điều có một con số đứng sau</h2>
+
+  <div class="two" style="gap:.3in">
+    <div class="col">
+      <div class="card"><h3>1 · <span class="g">Nhắn riêng</span>, không nói giữa kênh nữa</h3>
+        <p>Bot đang chiếm <b>gần một nửa số tin</b> và <b>88% số chữ</b> của kênh đông nhất.
+           Chính nó làm kênh ngập. Giờ bot nhắn riêng cho người hỏi —
+           <b>kênh lớp không thêm một chữ nào</b>.</p></div>
+
+      <div class="card"><h3>2 · <span class="g">Mỗi người một câu trả lời khác nhau</span></h3>
+        <p>85% các bạn chỉ vào 1 kênh, mà việc thì nằm rải ở 5 kênh.
+           Bot chỉ đọc kênh mà <b>chính bạn vào được</b>: kênh đội bạn thì đọc,
+           kênh đội khác thì không. Cái này <b>Discord tự chặn</b>, không phải bọn em dặn AI.</p></div>
+
+      <div class="card"><h3>3 · Đọc <span class="g">3 ngày</span>, và nhắc lại cũng không sao</h3>
+        <p>2 trong 5 việc còn hạn là báo từ hôm trước. Bot <b>không nhớ hôm qua bạn đã xem gì</b> —
+           việc cũ mà còn hạn thì hôm nay vẫn nhắc. Đọc lại mất 2 giây, còn quên thì mất điểm bài.</p></div>
+    </div>
+
+    <div class="col">
+      <p class="sm" style="margin-bottom:.08in"><b>Bot làm đúng một việc</b></p>
+      <p style="font-size:13pt;line-height:1.45;margin-bottom:.2in">
+        Bạn hỏi có gì cần biết không → bot đọc 3 ngày gần đây ở các kênh bạn vào được →
+        chỉ ra việc nào có hạn, hạn lúc nào, kèm đường dẫn về tin gốc để bạn tự xem lại.
+      </p>
+
+      <p class="sm" style="margin-bottom:.08in"><b>Thà thừa còn hơn thiếu</b></p>
+      <p style="font-size:13pt;line-height:1.45;margin-bottom:.2in">
+        Sót một hạn nộp thì <b>mất điểm bài, không lấy lại được</b>.
+        Thừa một dòng thì <b>đọc mất 2 giây</b>. Hai cái lệch nhau xa quá, nên bot
+        không được tự bớt cho gọn. Nhưng cũng không được đoán: không chỉ ra được
+        hạn cụ thể thì không đưa vào, không tìm thấy gì thì nói thẳng là không có.
+      </p>
+
+      <p class="sm" style="margin-bottom:.08in"><b>Bot không làm mấy việc này</b></p>
+      <ul style="font-size:12.5pt">
+        <li>Không trả lời giữa kênh cho cả lớp cùng thấy</li>
+        <li>Không tự đăng bản tin hằng ngày — ai hỏi mới trả lời</li>
+        <li>Không đọc kênh mà bạn không vào được</li>
+        <li>Không trả lời câu hỏi về quy định — chỗ đó bọn em không có nguồn để dẫn</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>3 / 6 · Cách làm</span><span>spec.md §2 và §4 — trong đó có cả mấy hướng bọn em đã bỏ và lý do bỏ</span></div>
+</section>
+
+<!-- ─────────────────────────── 4 · CHẠY THẬT ─────────────────────────── -->
+<section class="s">
+  <div class="kicker">Chạy thật</div>
+  <h2>515 tin trong 3 ngày <span class="g">→</span> 8 việc cần làm <span class="sm" style="font-size:13pt">· mất 8 giây</span></h2>
+
+  <div class="two" style="gap:.34in">
+    <div class="col" style="flex:1.05">
+      <div class="chat">
+        <div><span class="who">bạn</span> <span class="dim">gõ</span>
+             <code style="background:#3a4048;color:#dfe5e2">/luuy</code>
+             <span class="eph">chỉ mình bạn nhìn thấy</span></div>
+        <div style="margin:.1in 0 .06in;border-top:1px solid #4a515a;padding-top:.1in">
+          <b>Bạn cần lưu ý 8 việc trong 3 ngày qua</b></div>
+        <div style="margin-bottom:.05in"><span class="hit">Hạn đăng ký đề tài — 23:59 ngày 20/09</span><br>
+          <span class="dim">Xem tin gốc → · #thong-bao · 13/09 21:49</span></div>
+        <div style="margin-bottom:.05in"><span class="hit">Hạn đăng ký team QA video — hết ngày 16/9</span><br>
+          <span class="dim">Xem tin gốc → · #hoi-dap · 14/09 14:48</span></div>
+        <div style="margin-bottom:.05in"><span class="hit">Workshop 02 — 20:00 ngày 13/09</span><br>
+          <span class="dim">Xem tin gốc → · #thong-bao · 13/09 08:42</span></div>
+        <div class="dim" style="margin:.08in 0 .06in">… còn 5 việc nữa</div>
+        <div class="dim" style="border-top:1px solid #4a515a;padding-top:.08in">
+          Đã đọc 515 tin · 3 kênh: #thong-bao (4), #hoi-dap (170), #chung (341)</div>
+        <div style="margin-top:.08in"><span style="border:1px solid #6a727c;border-radius:4px;padding:.02in .09in">🚩 Có mục sai</span></div>
+      </div>
+      <p class="sm" style="margin-top:.12in">
+        Kênh lớp <b>không thêm chữ nào</b>. Nếu bạn gọi bot bằng cách tag nó, thì nội dung
+        đi vào tin nhắn riêng, trong kênh chỉ còn một dòng báo và <b>tự xoá sau 30 giây</b>.
+      </p>
+    </div>
+
+    <div class="col">
+      <p class="sm" style="margin-bottom:.08in"><b>Ai làm bước nào</b></p>
+      <table>
+        <tr><th>Bước</th><th>Ai làm</th></tr>
+        <tr><td class="wrap">Bạn hỏi chuyện khác → bot nói luôn là nó không làm được việc đó</td><td><b>máy</b></td></tr>
+        <tr><td class="wrap">Lấy tin 3 ngày gần đây, ở các kênh bạn vào được</td><td><b>máy</b></td></tr>
+        <tr><td class="wrap">Đọc một lượt, chỉ ra chỗ nào có hạn phải làm</td><td><b class="g">AI</b></td></tr>
+        <tr><td class="wrap">Kiểm lại: tin này có thật không? Không có thì bỏ</td><td><b>máy</b></td></tr>
+        <tr><td class="wrap">Tin cũ đã bị đổi hạn → bỏ tin cũ, chỉ giữ tin mới</td><td><b>máy</b></td></tr>
+        <tr><td class="wrap">Hai chỗ nói cùng một việc → chỉ giữ một</td><td><b>máy</b></td></tr>
+        <tr><td class="wrap">Sắp thứ tự: việc có hạn lên trước, tin mới lên trước</td><td><b>máy</b></td></tr>
+      </table>
+      <p class="sm" style="margin-top:.14in">
+        <b>AI chỉ đọc. Còn lại máy làm theo luật bọn em viết.</b>
+        Chia ra như vậy để lúc sai thì biết là <b>AI đọc sai</b>, hay <b>luật bọn em viết sai</b>.
+      </p>
+    </div>
+  </div>
+  <div class="foot"><span>4 / 6 · Chạy thật</span><span>codebase/ — chỗ nào chạy thật, chỗ nào còn giả, ghi rõ trong codebase/README.md</span></div>
+</section>
+
+<!-- ─────────────────────────── 5 · ĐO ─────────────────────────── -->
+<section class="s">
+  <div class="kicker">Thử và đo</div>
+  <h2>Thử bao nhiêu lần, đúng bao nhiêu</h2>
+
+  <div class="two" style="gap:.34in">
+    <div class="col">
+      <p class="sm" style="margin-bottom:.08in"><b>Hai lần đo, đều trên tin nhắn thật</b></p>
+      <table>
+        <tr><th>Lần</th><th>Lúc đó bot thế nào</th><th>Câu thử</th><th>Đúng</th></tr>
+        <tr><td>1 · 17/09</td><td class="wrap">đọc 1 ngày · trả lời giữa kênh</td><td>14</td><td class="cross">12 — 85%</td></tr>
+        <tr><td>2 · 18/09</td><td class="wrap">đọc 3 ngày · nhắn riêng · theo kênh của bạn</td><td>20</td><td class="tick">20 — 100%</td></tr>
+      </table>
+      <p class="sm" style="margin:.1in 0 .18in">
+        <b>Nói cho sòng phẳng về con số 100%:</b> có 2 trong 20 câu thử là bọn em
+        <b>sửa lại đề bài chấm</b>, vì đề cũ chấm sai chứ bot không sai. Giữ nguyên đề cũ
+        thì là <b>18/20, tức 90%</b>. Bọn em ghi cả hai số. Ngoài ra còn
+        <b>5 câu thử phải bấm tay</b> mà chưa kịp bấm.
+      </p>
+
+      <p class="sm" style="margin-bottom:.08in"><b>Bọn em tự đọc tay rồi ghi ra đáp án, xong so với bot</b></p>
+      <table>
+        <tr><th>Đọc phần nào</th><th>Việc phải tìm</th><th>Bot tìm được</th><th>Sót</th><th>Thừa</th></tr>
+        <tr><td class="wrap"><b>Cả 3 ngày</b> <span class="sm">(đúng kiểu bot chạy thật)</span></td><td>6</td><td class="tick">6</td><td class="tick">0</td><td class="tick">0</td></tr>
+        <tr><td class="wrap">Từng ngày một</td><td>6</td><td class="tick">6</td><td class="tick">0</td><td class="cross">1</td></tr>
+      </table>
+      <p class="sm" style="margin-top:.1in">
+        Số lần bot dẫn tới một tin <b>không có thật</b>: <b class="g">0</b>, ở cả hai lần đo.
+      </p>
+    </div>
+
+    <div class="col">
+      <p class="sm" style="margin-bottom:.08in"><b>Chỉ thừa đúng 1 dòng — mà nó chỉ ra một lỗi thật</b></p>
+      <div class="quote">“các bạn sẽ feedback trong 24 tiếng sau khi nhận video nhé”
+        <span class="src">Cái này <b>không có ngày giờ cụ thể</b>, và chỉ đúng với ai đã vào
+        đội làm video. Bot vẫn đưa vào.</span></div>
+      <p style="font-size:12.5pt;line-height:1.45">
+        Mỗi dòng bot trả về đều tự chấm <b>mình chắc bao nhiêu</b>, từ 0 tới 1.
+        Dòng này AI chấm <b>đúng 0,7</b>. Mà luật của bọn em lúc đó là
+        <b>dưới 0,7</b> mới dán thêm chữ “cần kiểm lại”. Đúng 0,7 thì <b>lọt</b> — nó hiện ra
+        trông như chắc chắn. Bọn em sửa luật thành <b>từ 0,7 trở xuống</b>:
+        dòng đó vẫn hiện, nhưng hiện kèm cảnh báo.
+      </p>
+
+      <p class="sm" style="margin:.18in 0 .08in"><b>Thế nào là đạt — chốt từ 17/09, không đổi nữa</b></p>
+      <p style="font-size:12.5pt;line-height:1.45">
+        Đúng <b>từ 80% trở lên</b>. <b>Và</b> không được có dòng nào dẫn tới tin không có thật.
+        <b>Và</b> không được lấy tin từ kênh bạn không vào được.
+        Hai điều sau chỉ cần sai <b>một lần</b> là trượt cả lần đo, dù đúng bao nhiêu phần trăm.
+      </p>
+      <p class="sm" style="margin-top:.1in">
+        Trong spec bọn em liệt kê <b>19 tình huống bot có thể sai</b>, trong đó
+        <b>8 tình huống đã xảy ra thật</b> — ghi rõ cái nào sửa rồi, cái nào chưa.
+      </p>
+    </div>
+  </div>
+  <div class="foot"><span>5 / 6 · Thử và đo</span><span>eval/ — câu thử, đáp án, và bảng kết quả cả hai lần đo</span></div>
+</section>
+
+<!-- ─────────────────────────── 6 · CHƯA XONG ─────────────────────────── -->
+<section class="s">
+  <div class="kicker">Tự khai</div>
+  <h2>Cái chưa xong, nói thẳng</h2>
+
+  <div class="two" style="gap:.34in">
+    <div class="col">
+      <p class="sm" style="margin-bottom:.08in"><b>Sửa trong 12 tiếng cuối — mỗi cái do gặp một lỗi thật</b></p>
+      <table>
+        <tr><td class="tick">✓</td><td class="wrap"><b>Bot không biết tin nào của ngày nào.</b> Đọc 3 ngày mà bọn em chỉ đưa giờ, quên đưa ngày → nó hiểu sai hết mấy chữ “tối nay”, “sáng mai”</td></tr>
+        <tr><td class="tick">✓</td><td class="wrap"><b>Thông báo bị đăng lại sau 2 ngày và đổi hạn.</b> Luật cũ chỉ so trong cùng một ngày nên không bắt được</td></tr>
+        <tr><td class="tick">✓</td><td class="wrap"><b>Một tin chứa hai việc khác nhau.</b> Trước đó bọn em chấm nhầm thành “bot nói lại hai lần”</td></tr>
+        <tr><td class="tick">✓</td><td class="wrap"><b>Hỏi chuyện khác</b> → bot nói luôn là nó không làm được, thay vì cứ đổ danh sách ra</td></tr>
+        <tr><td class="tick">✓</td><td class="wrap"><b>Thêm nút “Có mục sai”</b> → bạn báo lại được, bọn em có cái để sửa</td></tr>
+      </table>
+    </div>
+
+    <div class="col">
+      <p class="sm" style="margin-bottom:.08in"><b>Chưa xong — khai trước khi bị hỏi</b></p>
+      <table>
+        <tr><td class="cross">✗</td><td class="wrap"><b>Chưa cho 5 bạn ngoài nhóm dùng thử.</b> Đồ nghề đã chuẩn bị sẵn, chạy ngay trước giờ thi</td></tr>
+        <tr><td class="cross">✗</td><td class="wrap"><b>5 câu thử phải bấm tay chưa bấm</b> — mấy câu về nhắn riêng và kênh của từng người, cần 2 tài khoản ở 2 đội khác nhau mới thử được</td></tr>
+        <tr><td class="cross">✗</td><td class="wrap"><b>Đọc nhiều ngày thì AI hay lan man:</b> nó trả về thừa 24 dòng toàn chuyện trò. Máy lọc sạch nên bạn không thấy, nhưng gốc thì chưa sửa</td></tr>
+        <tr><td class="cross">✗</td><td class="wrap"><b>Chưa thử trường hợp có người cố ra lệnh cho bot</b> bằng tin nhắn. Và bot <b>chưa đọc được chữ trong ảnh chụp màn hình</b></td></tr>
+        <tr><td class="cross">✗</td><td class="wrap"><b>Nút “Có mục sai” mới chỉ ghi lại</b>, chưa hỏi bạn sai ở dòng nào và chưa tự sửa được</td></tr>
+      </table>
+
+      <p class="sm" style="margin:.18in 0 .06in"><b>Ai làm gì</b></p>
+      <p style="font-size:12pt;line-height:1.5">
+        <b>Hiếu</b> viết spec · chốt thế nào là đạt &nbsp;·&nbsp;
+        <b>Hải</b> phần đọc và lọc tin &nbsp;·&nbsp;
+        <b>Khánh</b> đi tìm số liệu · làm đáp án · đo &nbsp;·&nbsp;
+        <b>Huy</b> bot Discord · phần kênh riêng của từng người
+      </p>
+    </div>
+  </div>
+  <div class="foot"><span>6 / 6 · Tự khai</span><span>Số đo ghi đúng như chạy ra, kể cả lúc không đạt — spec.md §9 có đủ vết sửa</span></div>
+</section>
+
+</body>
+</html>
