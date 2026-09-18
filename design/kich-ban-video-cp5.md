@@ -16,7 +16,7 @@ không phải quay cho có.
 | # | Việc | Lệnh / thao tác |
 |---|---|---|
 | 1 | Đổ dữ liệu 3 ngày vào kênh test, giữ ngày giờ gốc | `python codebase/do-tin-vao-kenh.py --guild K4-L3-4 --ngay tat-ca --that` |
-| 2 | Bật bot, chờ dòng `da dang ky /luuy` | `python codebase/bot.py` |
+| 2 | Bật bot, chờ dòng `Trợ Lý Kute đã online: ...` | `python codebase/bot.py` |
 | 3 | **Kiểm tra cache đã ấm** — chạy thử một lần, phải thấy dòng `(dùng lại kết quả đã lưu, không tốn lượt API)` | `python codebase/run.py` |
 | 4 | Đăng nhập **2 tài khoản Discord** ở 2 kênh đội khác nhau (cảnh 3 cần) | |
 | 5 | Phóng to chữ Discord: Ctrl `+` hai lần. Chữ nhỏ trên máy chiếu là không ai đọc được | |
@@ -44,17 +44,18 @@ không phải quay cho có.
 
 ### Cảnh 2 · Hỏi và nhận riêng — 35 giây
 
-**Quay:** gõ `/luuy` trong kênh lớp → chờ → embed hiện ra.
+**Quay:** tag `@Trợ Lý Kute có gì quan trọng em cần biết không` trong kênh lớp → chờ → mở tin nhắn riêng ra.
 
 **Phải thấy rõ trong khung hình:**
-- Nhãn **"Only you can see this"** của Discord → bằng chứng trả lời riêng
+- Trong kênh lớp **chỉ có một dòng** "Mình đã nhắn riêng cho bạn rồi nhé" → bằng chứng không làm loãng kênh
 - Tiêu đề **"Bạn cần lưu ý 8 việc trong 3 ngày qua"**
 - Ít nhất 2 mục có **Hạn:** và dòng **"Xem tin gốc → · #kênh · ngày giờ"**
 - Chân embed: **"Đã đọc 515 tin · 3 kênh: …"**
 
 **Nói:**
-> "Hỏi một câu. Bot đọc mọi kênh mình có quyền xem trong 3 ngày, trả lời riêng — chỉ mình
-> thấy. Kênh lớp không thêm một chữ nào. Mỗi mốc kèm link về tin gốc để tự kiểm."
+> "Em tag bot ngay trong kênh lớp. Nó đọc mọi kênh em có quyền xem trong 3 ngày, rồi
+> nhắn riêng cho em. Trong kênh chỉ còn đúng một dòng, mà dòng đó cũng tự xoá sau 30 giây.
+> Mỗi việc kèm link về tin gốc để tự kiểm."
 
 **Rồi bấm vào một link "Xem tin gốc →"** — Discord nhảy đúng tin đó. Cảnh này quan trọng:
 nó chứng minh không bịa nguồn.
@@ -63,7 +64,7 @@ nó chứng minh không bịa nguồn.
 
 ### Cảnh 3 · Cá nhân hoá — 25 giây
 
-**Quay:** chuyển sang tài khoản thứ hai (ở kênh đội khác), gõ `/luuy`.
+**Quay:** chuyển sang tài khoản thứ hai (ở kênh đội khác), tag bot y như vậy.
 
 **Phải thấy:** danh sách **khác** danh sách của tài khoản 1, và chân embed liệt kê
 **tập kênh khác**.
@@ -92,7 +93,7 @@ nó chứng minh không bịa nguồn.
 
 ## Checklist trước khi nộp video
 
-- [ ] Có nhãn **"Only you can see this"** hiện rõ ít nhất một lần
+- [ ] Thấy rõ kênh lớp **chỉ có một dòng báo**, còn nội dung nằm trong tin nhắn riêng
 - [ ] Có **bấm vào link tin gốc** và Discord nhảy đúng tin
 - [ ] Có **hai tài khoản** ra hai kết quả khác nhau
 - [ ] Có cảnh bot **từ chối** câu ngoài phạm vi

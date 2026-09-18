@@ -25,9 +25,10 @@ chứ không dựa vào prompt, và điều đó khác nhau chỗ nào về mứ
 
 > …
 
-**b. "Ephemeral và DM khác nhau gì, vì sao giữ cả hai cửa?"**
-*(`/luuy` hiện tại chỗ nhưng mất khi đóng · tag bot thì vào DM giữ lại được ·
-xử lý khi người dùng chặn DM)*
+**b. "Vì sao trả lời bằng tin nhắn riêng, mà không hiện luôn tại chỗ?"**
+*(tin nhắn riêng giữ lại đọc sau được, hợp với thói quen tag bot sẵn có · đổi lại
+phải xử lý khi người dùng chặn tin nhắn riêng · và vì sao nhóm bỏ hẳn lệnh gạch chéo
+ngày 18/09 thay vì giữ cả hai)*
 
 > …
 

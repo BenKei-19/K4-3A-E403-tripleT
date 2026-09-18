@@ -57,6 +57,7 @@ Không phải bot mới, không phải bảng tin, không tự đẩy tin địn
 
 | Đọc gì | Ở đâu |
 |---|---|
+| **Hướng dẫn cho cả nhóm** (dự án là gì · cài đặt · cách chạy · câu hỏi hay bị hỏi) | [`huong-dan.md`](huong-dan.md) |
 | **Spec đầy đủ** (§1–§9, bằng chứng, số đo) | [`spec.md`](spec.md) |
 | Cách chạy, luồng xử lý, phần nào thật phần nào mock | [`codebase/README.md`](codebase/README.md) |
 | Bộ 25 test case + đáp án dán tay | [`eval/test-cases.json`](eval/test-cases.json) · [`eval/golden-set.json`](eval/golden-set.json) |

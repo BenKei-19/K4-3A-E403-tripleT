@@ -37,7 +37,7 @@ Phần còn là mock: Nhánh HỎI LẠI khi câu hỏi mơ hồ (CLARIFY trong 
 
 | Mã | Loại | Hành vi mong đợi | Cách kiểm | Kết quả |
 |---|---|---|---|---|
-| TC15 | riêng tư · ephemeral | Gõ /luuy trong kênh lớp: kết quả chỉ người gõ thấy, kênh KHÔNG có thêm tin công khai nào. | Đếm tin mới hiện trong kênh với tài khoản thứ hai = 0 | _chưa điền_ |
+| TC15 | riêng tư · người hỏi chặn tin nhắn riêng | Người hỏi đang chặn tin nhắn riêng từ thành viên server: bot phải trả lời NGAY TRONG KÊNH, nói rõ lý do và cách bật lại, KHÔNG im lặng và KHÔNG đổ danh sách ra kênh. | Tắt nhận tin nhắn riêng rồi tag bot; câu bot trả trong kênh không chứa mục nào | _chưa điền_ |
 | TC16 | riêng tư · tag bot thì nhắn riêng | Tag bot trong kênh: nội dung trả lời đi vào DM; trong kênh chỉ còn 1 dòng báo đã nhắn riêng, tự xoá sau 30 giây. | Tin công khai duy nhất không chứa mục nào, và biến mất sau 30s | _chưa điền_ |
 | TC17 | cá nhân hoá · không rò sang đội khác | Hai tài khoản ở hai kênh đội khác nhau cùng hỏi: người A không nhận được mục nào lấy từ kênh đội của B. | Mọi link trong câu trả lời của A đều trỏ về kênh A đọc được | _chưa điền_ |
 | TC18 | cá nhân hoá · khai đúng phạm vi đã quét | Chân câu trả lời liệt kê đúng những kênh người hỏi đọc được, không thừa không thiếu. | So danh sách kênh ở chân với danh sách kênh tài khoản đó nhìn thấy | _chưa điền_ |

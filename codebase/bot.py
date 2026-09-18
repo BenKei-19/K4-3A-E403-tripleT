@@ -31,8 +31,6 @@ if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 import discord
-from discord import app_commands
-from discord.ext import commands
 from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -51,22 +49,14 @@ MUC_MOI_TIN = 10                                     # Discord cho tối đa 25 
 
 intents = discord.Intents.default()
 intents.message_content = True          # bắt buộc, phải bật cả ở Developer Portal
-client = commands.Bot(command_prefix="!khong-dung", intents=intents)
+client = discord.Client(intents=intents)
 
 
 @client.event
 async def on_ready():
     print(f"Trợ Lý Kute đã online: {client.user}", flush=True)
-    print(f"Phạm vi quét: {SO_NGAY} ngày gần nhất, mọi kênh người hỏi đọc được", flush=True)
-    # Đăng ký lệnh gạch chéo theo từng server -> có hiệu lực ngay, không phải
-    # chờ Discord phát tán toàn cục (mất tới 1 tiếng).
-    for g in client.guilds:
-        try:
-            client.tree.copy_global_to(guild=g)
-            await client.tree.sync(guild=g)
-            print(f"      da dang ky /luuy trong server {g.name}", flush=True)
-        except Exception as e:
-            print(f"      khong dang ky duoc /luuy: {e}", flush=True)
+    print(f"Bot sẽ đọc: {SO_NGAY} ngày gần nhất, mọi kênh người hỏi vào được", flush=True)
+    print(f"Cách dùng: tag bot trong kênh, bot sẽ nhắn riêng cho người hỏi", flush=True)
 
 
 def _ten_ngay_gio(m: discord.Message) -> tuple[str, str, str]:
@@ -198,7 +188,7 @@ def _embed_ngoai_pham_vi() -> discord.Embed:
         description=(
             "Mình chỉ làm được đúng một việc: liệt kê **những mốc thời gian bạn cần "
             f"lưu ý trong {SO_NGAY} ngày gần nhất**, trong các kênh bạn đọc được.\n\n"
-            "Nếu bạn muốn xem danh sách đó, gõ `/luuy` hoặc tag mình kèm câu "
+            "Nếu bạn muốn xem danh sách đó, tag mình kèm câu "
             "*\"những thông tin quan trọng tôi cần nắm là gì\"*.\n\n"
             "Còn câu hỏi về quy định, điểm, hay lỗi kỹ thuật thì mình chưa trả lời "
             "được — cái đó bạn hỏi TA/Coach sẽ chắc hơn, mình không đoán bừa."),
@@ -316,53 +306,6 @@ async def _gui_rieng(tin_nhan: discord.Message, nguoi, embeds: list[discord.Embe
             "của server rồi tag mình lần nữa nhé.",
             mention_author=False)
         print("      -> BI CHAN DM", flush=True)
-
-
-# ------------------------------------------------------------------ lệnh /luuy
-
-@client.tree.command(name="luuy",
-                     description="Xem mọi mốc thời gian trong các kênh của bạn, 3 ngày gần nhất")
-async def luuy(tuong_tac: discord.Interaction):
-    """Trả lời ephemeral: hiện ngay trong kênh nhưng CHỈ người gõ lệnh thấy được."""
-    if tuong_tac.guild is None:
-        await tuong_tac.response.send_message("Lệnh này chỉ dùng trong server.", ephemeral=True)
-        return
-
-    # Phải báo Discord biết là đang xử lý, nếu không lệnh sẽ hết hạn sau 3 giây
-    await tuong_tac.response.defer(ephemeral=True, thinking=True)
-    nguoi = tuong_tac.user
-    print(f"[/luuy] {nguoi} trong #{tuong_tac.channel}", flush=True)
-
-    tin, nguon, da_quet = await _quet_kenh_cua_nguoi(nguoi, 0)
-    print(f"        quet {len(da_quet)} kenh, {len(tin)} tin", flush=True)
-
-    if not tin:
-        await tuong_tac.followup.send(
-            f"Mình không thấy tin nào trong các kênh bạn đọc được ở {SO_NGAY} ngày qua.",
-            ephemeral=True)
-        return
-
-    kq = digest(tin, f"{SO_NGAY} ngày gần nhất")
-
-    if not kq.muc:
-        e = discord.Embed(
-            title=f"Không có mốc nào trong {SO_NGAY} ngày qua",
-            description=(f"Mình đã đọc {kq.tong_tin_doc} tin trong {len(da_quet)} kênh "
-                         "bạn có quyền xem, không có hạn nộp hay lịch nào.\n"
-                         "Mình chỉ trả lời từ tin có thật — không có thì nói không có."),
-            colour=XANH_LA)
-        await tuong_tac.followup.send(embed=e, ephemeral=True)
-        return
-
-    embeds = _dung_embed(kq, nguon, da_quet, tuong_tac.guild)
-    for i, e in enumerate(embeds):
-        if i == len(embeds) - 1:      # nút báo sai gắn ở tin cuối — §6 correction
-            await tuong_tac.followup.send(
-                embed=e, ephemeral=True,
-                view=NutBaoSai([m.message_id for m in kq.muc]))
-        else:
-            await tuong_tac.followup.send(embed=e, ephemeral=True)
-    print("        -> da tra ephemeral", flush=True)
 
 
 if __name__ == "__main__":

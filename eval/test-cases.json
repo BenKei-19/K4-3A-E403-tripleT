@@ -202,17 +202,18 @@
     },
     {
       "ma": "TC15",
-      "loai": "riêng tư · ephemeral",
+      "loai": "riêng tư · người hỏi chặn tin nhắn riêng",
       "cach_chay": "tay",
       "dau_vao": {
         "guild": "server test",
         "ngay": "trực tiếp"
       },
-      "hanh_vi_mong_doi": "Gõ /luuy trong kênh lớp: kết quả chỉ người gõ thấy, kênh KHÔNG có thêm tin công khai nào.",
+      "hanh_vi_mong_doi": "Người hỏi đang chặn tin nhắn riêng từ thành viên server: bot phải trả lời NGAY TRONG KÊNH, nói rõ lý do và cách bật lại, KHÔNG im lặng và KHÔNG đổ danh sách ra kênh.",
       "dieu_kien_dat": {
         "kieu": "tay",
-        "mo_ta": "Đếm tin mới hiện trong kênh với tài khoản thứ hai = 0"
-      }
+        "mo_ta": "Tắt nhận tin nhắn riêng rồi tag bot; câu bot trả trong kênh không chứa mục nào"
+      },
+      "_sua_ngay_18_09": "Case cũ thử lệnh /luuy (trả lời ephemeral). Nhóm đã bỏ hẳn lệnh đó để chỉ còn MỘT cách dùng là tag bot. Bỏ /luuy thì người chặn tin nhắn riêng không còn đường lui, nên chỗ đó phải có case kiểm."
     },
     {
       "ma": "TC16",

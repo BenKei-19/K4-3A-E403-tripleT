@@ -10,10 +10,12 @@ không phải bot mới và không phải bảng tin. Chi tiết thiết kế: `
 
 Hai cửa vào, cả hai đều riêng tư:
 
-| Cách hỏi | Bot trả ở đâu |
+Chỉ có **một cách dùng**: tag bot ngay trong kênh.
+
+| Bạn làm gì | Bot làm gì |
 |---|---|
-| `/luuy` | **ephemeral** — hiện ngay trong kênh nhưng chỉ người gõ thấy |
-| Tag bot | **nhắn riêng (DM)**; trong kênh chỉ còn 1 dòng báo, tự xoá sau 30 giây |
+| Tag bot kèm câu hỏi | **Nhắn riêng** danh sách cho bạn; trong kênh chỉ còn 1 dòng báo, **tự xoá sau 30 giây** |
+| Tag bot nhưng hỏi chuyện khác | Nói rõ nó không làm được việc đó, không đổ danh sách ra |
 
 ## Phần nào chạy thật, phần nào mock
 
@@ -23,7 +25,7 @@ Hai cửa vào, cả hai đều riêng tư:
 | `digest.py` — guardrail, chống trùng theo mốc, xếp hạng | **Chạy thật** | Code thuần, không dùng AI |
 | `run.py` — chạy trên terminal | **Chạy thật** | Đọc pack hoặc file JSON, gọi AI, in kết quả |
 | `bot.py` — quét theo quyền kênh của người hỏi, cửa sổ 3 ngày | **Chạy thật** | Chỉ đọc kênh mà **cả người hỏi lẫn bot** có quyền đọc |
-| `bot.py` — trả lời riêng (`/luuy` ephemeral + DM) | **Chạy thật** | Bị chặn DM thì nói thẳng lý do, không im lặng |
+| `bot.py` — trả lời riêng qua tin nhắn riêng | **Chạy thật** | Bị chặn tin nhắn riêng thì nói thẳng lý do, không im lặng |
 | `bot.py` — cổng lọc câu hỏi ngoài phạm vi, nút "Có mục sai" | **Chạy thật** | Phản hồi ghi vào `../eval/phan-hoi.log` |
 | `../mock/tro-ly-demo-mock.html` | **Mock** | Giao diện mô phỏng, câu trả lời viết cứng. Dùng ở CP2 để trình bày luồng, **không gọi AI** |
 | Dữ liệu | **Mock / data BTC** | `data/messages-mock.json` là dữ liệu giả tự sinh. Data thật lấy từ `discord-pack` của BTC, để ngoài repo |
@@ -63,7 +65,7 @@ python eval/chay-test.py --luot 2
 ## Luồng xử lý
 
 ```
-học viên hỏi (/luuy hoặc tag bot)
+học viên tag bot trong kênh
       ↓
   CỔNG LỌC Ý ĐỊNH                         ← bot.py, code thuần
   hỏi chuyện khác → nói rõ phạm vi, dừng

@@ -20,7 +20,7 @@ Cần đủ bốn thứ, thiếu một thứ là mất điểm khối này:
    ```bash
    python codebase/do-tin-vao-kenh.py --guild K4-L3-4 --ngay tat-ca --that
    ```
-2. Bật bot: `python codebase/bot.py` — chờ dòng `da dang ky /luuy trong server ...`
+2. Bật bot: `python codebase/bot.py` — chờ dòng `Trợ Lý Kute đã online: ...`
 3. **Tạo ít nhất 2 kênh đội** với quyền khác nhau, mỗi người thử chỉ vào được một
    kênh đội. Đây là chỗ chứng minh cá nhân hoá — hai người phải nhận hai câu trả lời khác nhau.
 4. Mở sẵn `nhat-ky.md` để gõ trực tiếp trong lúc quan sát.
@@ -42,7 +42,7 @@ Cần đủ bốn thứ, thiếu một thứ là mất điểm khối này:
 
 | Ai | Cách làm | Để đo |
 |---|---|---|
-| 3 người | Dùng bot (`/luuy` hoặc tag bot) | Thời gian tìm · số mốc tìm ra |
+| 3 người | Dùng bot — **tag `@Trợ Lý Kute`** (cách chính) | Thời gian tìm · số mốc tìm ra |
 | 2 người | **Cuộn tay**, không được dùng bot | Cùng task, để biết bot có nhanh hơn thật không |
 
 Người cuộn tay là đối chứng. Không có họ thì con số "nhanh hơn" chỉ là cảm giác.

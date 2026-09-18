@@ -104,7 +104,7 @@ Cả bốn ứng viên đều nhắm vào **cùng một lượt tương tác đ�
 - *Flow:* `/lệnh` → Discord hiện kết quả chỉ cho người gõ, kèm nhãn "Only you can see this".
 - *Đáng học:* nền tảng đã có sẵn đúng cơ chế riêng tư nhóm cần — không phải tự chế.
 - *Đáng né:* ephemeral **không lưu lại**, người dùng đóng đi là mất; và lệnh chỉ có 3 giây để phản hồi, quá hạn là Discord huỷ lượt tương tác.
-- *Mình khác gì:* `defer(thinking=True)` để giữ lượt tương tác trong lúc gọi AI, và giữ **hai cửa** — `/luuy` (ephemeral) cho người muốn xem tại chỗ, tag bot → **nhắn riêng (DM)** cho người muốn giữ lại đọc sau.
+- *Mình khác gì:* nhóm **không dùng ephemeral**, mà trả về **tin nhắn riêng** — giữ lại đọc sau được, và hợp với thói quen sẵn có là tag bot. Đổi lại phải xử lý trường hợp người dùng chặn tin nhắn riêng (xem §6).
 
 ---
 
@@ -137,7 +137,7 @@ Một học viên hỏi Trợ Lý "những thông tin quan trọng tôi cần n�
 | Phân loại tin bằng AI (`digest.py`) | **Thật** — một lời gọi cho cả cửa sổ; chạy được cả Gemini 2.5 Flash lẫn Claude, tự chọn theo key có trong `.env` |
 | Guardrail kiểm `message_id` có thật | **Thật** — code thuần |
 | Quét theo quyền kênh của người hỏi, cửa sổ 3 ngày | **Thật** — `bot.py`, chạy trong server test của nhóm |
-| Trả lời riêng: `/luuy` ephemeral + tag bot → DM | **Thật** — kèm nhánh báo lỗi khi người dùng chặn DM |
+| Trả lời riêng: tag bot → nhắn riêng (DM) | **Thật** — kèm nhánh báo lỗi khi người dùng chặn DM |
 | Chia nhiều embed khi danh sách dài (Discord chỉ cho 25 field/embed) | **Thật** |
 | Dữ liệu trong kênh test | **Data BTC cấp**, đổ vào bằng `do-tin-vao-kenh.py` qua webhook, server test riêng tư chỉ nhóm vào |
 | Nhánh HỎI LẠI khi hỏi lệch chủ đề (CLARIFY ở canvas CP1) | **Thật** — cổng lọc ý định bằng code trong `bot.py` (`_hoi_dung_viec`), tag bot kèm câu không liên quan thì bot nói rõ phạm vi thay vì đổ danh sách |
@@ -187,7 +187,7 @@ Cost-of-error lệch hẳn về một phía: **bỏ sót một hạn nộp thì 
 | 13 | ④ Đặc thù domain | Mốc nằm trong **ảnh chụp màn hình** hoặc file đính kèm | Mất trắng mốc đó | **Chưa xử lý** — bot chỉ đọc text; pack có cột `n_attachments` nhưng không kèm nội dung file | Có trong pack |
 | 14 | Vận hành | Người hỏi **chặn tin nhắn riêng** từ thành viên server | Bot im lặng, người dùng tưởng hỏng | Bắt `discord.Forbidden` → trả lời trong kênh: nói rõ lý do và cách bật lại | **Rồi** — đã gặp khi thử |
 | 15 | Vận hành | Danh sách dài hơn 25 field → Discord từ chối embed | Mất câu trả lời | Chia 10 mục mỗi embed, gửi nhiều embed | Đã xử lý |
-| 16 | Vận hành | Lệnh `/luuy` quá 3 giây là Discord huỷ lượt tương tác | Người dùng thấy "ứng dụng không phản hồi" | `defer(ephemeral=True, thinking=True)` ngay trước khi gọi AI | Đã xử lý |
+| 16 | Vận hành | Người hỏi **chặn tin nhắn riêng** thì không còn đường nào nhận câu trả lời | Không dùng được sản phẩm | Bot nói rõ lý do và cách bật lại ngay trong kênh. **Đã biết là điểm yếu**: bỏ lệnh gạch chéo nghĩa là bỏ luôn đường lui | Kiểm bằng TC15 (chạy tay) |
 | 17 | Vận hành | Hết hạn mức API (Gemini free tier) | Bot im giữa buổi demo | Chờ đúng `retryDelay` rồi thử lại; **bộ nhớ đệm** kết quả theo prompt | **Rồi — hết lượt lúc 12:30 ngày 17/09** |
 | 18 | Vận hành | Cửa sổ rộng (779 tin) làm model **trôi**: trả thêm 24 mục `SKIP` toàn tin trò chuyện, dù prompt nói "không có mốc thì KHÔNG trả về" | Tốn token và tiền mỗi lời gọi; là mầm của lỗi nhiễu nếu model đổi nhãn | Code lọc sạch `SKIP` trước khi hiển thị nên **người dùng không thấy mục nào**; nhưng schema vẫn còn nhãn `SKIP` làm đường thoát cho model | **Rồi — quan sát ở lượt 2** trên lát 779 tin. Cách sửa đã biết (bỏ `SKIP` khỏi enum) nhưng **chưa làm**: đổi schema là đổi đầu vào, phải có một lượt đo riêng mới biết có lợi hay hại |
 | 19 | Vận hành | Kết quả dao động giữa các lượt chạy cùng một lát | Số đo không lặp lại được | `temperature = 0` + cache; vẫn còn dao động | **Rồi** — **khai thiếu** |
@@ -197,7 +197,8 @@ Cost-of-error lệch hẳn về một phía: **bỏ sót một hạn nộp thì 
 ## §6. Bốn đường đi của trải nghiệm
 
 **Happy path**
-Học viên gõ `/luuy` (hoặc tag `@Trợ Lý Kute những thông tin quan trọng tôi cần nắm là gì`) → bot duyệt các kênh **người đó** đọc được, lấy tin 3 ngày gần nhất → một lời gọi AI → guardrail → trả **ephemeral** (chỉ người gõ thấy) hoặc **DM** khi bị tag: tiêu đề "Bạn cần lưu ý N việc trong 3 ngày qua", mỗi mục một dòng + **Hạn:** + "Xem tin gốc → · #kênh · giờ", chân ghi "Đã đọc N tin · M kênh: …". Kênh lớp **không có thêm một chữ nào**; khi bị tag thì chỉ còn một dòng "Mình đã nhắn riêng cho bạn rồi nhé" **tự xoá sau 30 giây**.
+Học viên tag `@Trợ Lý Kute những thông tin quan trọng tôi cần nắm là gì` ngay trong kênh lớp — đây là **cách dùng chính**, đúng thói quen sẵn có (39% tin của học viên trong pack là tag bot). Bot duyệt các kênh **người đó** đọc được, lấy tin 3 ngày gần nhất → một lời gọi AI → guardrail → **nhắn riêng (DM)** cho người hỏi: tiêu đề "Bạn cần lưu ý N việc trong 3 ngày qua", mỗi mục một dòng + **Hạn:** + "Xem tin gốc → · #kênh · giờ", chân ghi "Đã đọc N tin · M kênh: …". Trong kênh lớp chỉ còn đúng một dòng "Mình đã nhắn riêng cho bạn rồi nhé", **tự xoá sau 30 giây**.
+Chỉ có **một cách dùng duy nhất** là tag bot — bỏ hẳn lệnh gạch chéo ngày 18/09 để không có hai đường làm cùng một việc.
 
 **Low-confidence (②)**
 Mốc mơ hồ → `do_chac < 0.7` → mục vẫn hiện, gắn thêm "· cần xác nhận" để học viên biết phải tự kiểm lại tin gốc. *(Đã biết: `M35849` "sáng mai" được chấm 0.9 — ngưỡng đang lỏng, cần đo lại.)*
@@ -214,7 +215,7 @@ Dưới câu trả lời có nút **"🚩 Có mục sai"**. Bấm vào: bot ghi 
 
 **Khi bị đòi ngoài phạm vi (③)**
 Tag bot kèm câu không liên quan ("cho mình hỏi cách cài docker với") → cổng lọc ý định bằng **code** (`_hoi_dung_viec`) chặn lại, bot trả riêng: *"Mình chỉ làm được đúng một việc: liệt kê những mốc thời gian bạn cần lưu ý trong 3 ngày gần nhất… Còn câu hỏi về quy định, điểm, hay lỗi kỹ thuật thì mình chưa trả lời được — cái đó bạn hỏi TA/Coach sẽ chắc hơn, mình không đoán bừa."* Tag trống (chỉ mention, không kèm chữ) vẫn tính là hỏi đúng việc.
-**Giới hạn đã biết:** cổng lọc là danh sách từ khoá, nên câu hỏi đúng việc mà diễn đạt lạ vẫn có thể bị chặn nhầm. Nhóm chọn cổng code thay vì thêm một lời gọi AI vì nó đoán trước được, không tốn thêm tiền, và chặn nhầm thì người dùng chỉ cần gõ `/luuy`.
+**Giới hạn đã biết:** cổng lọc là danh sách từ khoá, nên câu hỏi đúng việc mà diễn đạt lạ vẫn có thể bị chặn nhầm. Nhóm chọn cổng code thay vì thêm một lời gọi AI vì nó đoán trước được, không tốn thêm tiền, và chặn nhầm thì người dùng chỉ cần tag lại kèm chữ rõ hơn, ví dụ "có hạn gì không".
 
 **Case đặc thù domain (④)**
 Mốc bị dời/đính chính trong cửa sổ → bot phải trả bản mới nhất, ghi `thay_the_cho` trỏ về bản cũ, code loại bản cũ. **Giới hạn đã biết:** prompt mới phủ "trong ngày", chưa phủ đủ 3 ngày (§5 dòng 12).
@@ -249,7 +250,7 @@ Mỗi case ghi **mã đầu vào · hành vi mong đợi · điều kiện đạ
 
 | Mã | Loại | Cách chạy | Đầu vào | Hành vi mong đợi | Điều kiện đạt |
 |---|---|---|---|---|---|
-| TC15 | riêng tư · ephemeral | tay | Server test, gõ `/luuy` | Kết quả chỉ người gõ thấy; kênh không có thêm tin công khai nào | Đếm tin mới trong kênh bằng tài khoản thứ hai = 0 |
+| TC15 | riêng tư · người hỏi chặn tin nhắn riêng | tay | Tắt nhận tin nhắn riêng rồi tag bot | Bot trả lời ngay trong kênh, nói rõ lý do và cách bật lại; **không** đổ danh sách ra kênh | Câu bot trả trong kênh không chứa mục nào |
 | TC16 | riêng tư · tag bot thì nhắn riêng | tay | Server test, tag bot | Nội dung vào DM; trong kênh chỉ còn 1 dòng báo, tự xoá sau 30 giây | Tin công khai duy nhất không chứa mục nào |
 | TC17 | cá nhân hoá · không rò sang đội khác | tay | 2 tài khoản ở 2 kênh đội khác nhau | A không nhận được mục nào lấy từ kênh đội của B | Mọi link trong câu trả lời của A đều trỏ về kênh A đọc được |
 | TC18 | cá nhân hoá · khai đúng phạm vi | tay | Server test | Chân câu trả lời liệt kê đúng kênh người hỏi đọc được | So danh sách kênh ở chân với kênh tài khoản đó nhìn thấy |
@@ -366,7 +367,7 @@ Giao task thật cho 5 người ngoài nhóm, **mỗi người một tài khoả
 | 17/09 ~15:30 | **Bỏ trần "tối đa 6 mục"** trong prompt và trong TC13 | Giới hạn số mục chính là lỗi bỏ sót mà sản phẩm sinh ra để chữa. TC13 đổi sang chấm "mục nào cũng phải có mốc" |
 | 17/09 ~16:30 | **Phạm vi: 1 ngày → 3 ngày gần nhất** | Đo trên data: đến hết 14/09 có 5 mốc còn hiệu lực, 2 trong số đó (`M22827`, `M09449`) đăng từ ngày trước → phạm vi trong ngày bỏ sót 40% |
 | 17/09 ~16:30 | **Cá nhân hoá theo quyền kênh của người hỏi**, gồm cả kênh đội/nhóm | 171/201 người (85%) chỉ ở đúng 1 kênh → một bản tin chung không đúng cho ai cả |
-| 17/09 ~17:00 | **Trả lời riêng**: `/luuy` ephemeral + tag bot → DM; bỏ hẳn chế độ trả lời công khai | Đo trên data: bot đang chiếm 48% số tin và **88% số chữ** của kênh đông nhất (channel_10) — trả lời công khai chính là thứ làm loãng kênh lớp |
+| 17/09 ~17:00 | **Trả lời riêng**: tag bot → nhắn riêng; bỏ hẳn chế độ trả lời công khai | Đo trên data: bot đang chiếm 48% số tin và **88% số chữ** của kênh đông nhất (channel_10) — trả lời công khai chính là thứ làm loãng kênh lớp |
 | 17/09 ~17:00 | Cho phép **lặp lại mốc trong cửa sổ 3 ngày**; bỏ ý định theo dõi "lần cuối bạn đọc" | Cost-of-error: thấy lại tốn 2 giây, bỏ sót mất điểm bài. Và chính chương trình cũng lặp (`M49744` → `M41530` `[REMIND]`) |
 | 17/09 ~17:30 | Ghi nhận **hai điều kiện chấm sai** (TC08, TC12), áp dụng sửa từ lượt 2 | `M22532` thật sự có dòng "Hạn: hết ngày 16/9"; `M09449` thật sự chứa hai mốc khác nhau — xem §7 |
 | 17/09 ~17:30 | Ghi nhận lỗ hổng **thiếu ngày trong prompt** khi mở cửa sổ lên 3 ngày | Rà lại `digest.py` (`_tu_csv`) và `bot.py` (`_gio_va_ten`): cả hai chỉ giữ `HH:MM` |
