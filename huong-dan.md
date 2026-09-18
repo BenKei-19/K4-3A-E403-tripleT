@@ -44,9 +44,26 @@ Một file duy nhất: dự án là gì · cài thế nào · chạy thế nào 
 
 **Việc 2 đáng 8 điểm** — không làm thì tối đa chỉ được 92.
 
-⚠️ **Làm xong việc 2 thì sửa 2 chỗ** đang ghi "chưa cho 5 bạn dùng thử":
-- Slide 6: sửa `design/demo-slides.html` rồi xuất lại PDF (lệnh xuất ghi ở đầu file đó)
-- [Phần 8](#phần-8--thuyết-trình-ai-nói-gì) của file này
+## Làm xong việc nào thì sửa file nào
+
+Việc làm xong mà file vẫn ghi "chưa làm" thì lên thuyết trình tự khai là chưa làm. Mỗi việc
+xong nhớ sửa đúng các chỗ dưới đây:
+
+| Làm xong | Sửa ở đâu |
+|---|---|
+| **Việc 2** — 5 bạn dùng thử | ① `validation/nhat-ky.md`: điền bảng + 4 dòng kết luận, xoá dòng "Chưa chạy tính đến lúc nộp CP5" · ② `spec.md` §9: thêm **ít nhất 1 dòng** thay đổi do người thử góp ý (bắt buộc để được điểm) · ③ slide 6 trong `design/demo-slides.html`: xoá dòng "Chưa cho 5 bạn ngoài nhóm dùng thử" rồi **xuất lại PDF** |
+| **Việc 4** — 5 câu thử tay | ① `eval/ket-qua-luot-2.md`: thay chữ "chưa điền" bằng ĐẠT / KHÔNG ĐẠT · ② Phần 1 của file này: sửa dòng "Còn 5 câu thử phải bấm tay chưa bấm" · ③ slide 6: xoá dòng "5 câu thử phải bấm tay chưa bấm" rồi xuất lại PDF |
+| **Việc 5** — 2 mã học viên | `spec.md`: thay dòng `[CẦN NHÓM ĐIỀN 2 MÃ HỌC VIÊN]` |
+| **Tất cả** | Xoá dòng đó khỏi bảng "Còn phải làm" ở trên, rồi push |
+
+**Xuất lại PDF slide** — mở PowerShell trong thư mục dự án, chạy:
+
+```powershell
+& "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --no-pdf-header-footer --print-to-pdf="$PWD\demo-slides.pdf" "$PWD\design\demo-slides.html"
+```
+
+✅ **Đúng khi:** hiện dòng `... bytes written to file ...demo-slides.pdf`. Nếu có thêm dòng
+`ERROR ... mail.google.com` thì kệ nó — Chrome tự báo chuyện riêng, PDF vẫn ra bình thường.
 
 **Thứ tự nên làm:** đổ dữ liệu vào kênh test trước vì nó chạy mất 5 phút → trong lúc chờ
 thì viết reflection → quay video → gọi người tới thử → cuối cùng bấm 5 câu thử.
