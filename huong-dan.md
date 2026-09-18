@@ -4,6 +4,7 @@ Một file duy nhất: dự án là gì · cài thế nào · chạy thế nào 
 
 | Cần gì | Nhảy tới |
 |---|---|
+| **Mới nhận bàn giao — đọc cái này trước** | [Phần 0](#phần-0--bàn-giao) |
 | Hiểu dự án làm gì | [Phần 1](#phần-1--dự-án-này-là-gì) |
 | Cài máy từ đầu | [Phần 2](#phần-2--cài-đặt-từ-máy-trắng) |
 | Chạy thử ngay | [Phần 3](#phần-3--cách-chạy) |
@@ -13,6 +14,61 @@ Một file duy nhất: dự án là gì · cài thế nào · chạy thế nào 
 | Chạy bị lỗi | [Phần 7](#phần-7--lỗi-hay-gặp) |
 | Chuẩn bị thuyết trình | [Phần 8](#phần-8--thuyết-trình-ai-nói-gì) |
 | Bị giám khảo hỏi | [Phần 9](#phần-9--câu-hỏi-có-thể-bị-hỏi) |
+
+---
+
+# Phần 0 · Bàn giao
+
+*Cập nhật sáng 18/09. Làm xong việc nào thì xoá dòng đó khỏi bảng.*
+
+**Mốc giờ hôm nay 18/09:** nộp CP5 trước **13:00** · thuyết trình **17:30**
+
+## Đã xong
+
+- Code chạy thật: bot Discord (`codebase/bot.py`) + phần đọc và lọc tin (`codebase/digest.py`)
+- `spec.md` đủ 9 phần, số liệu đều đếm từ tin nhắn thật
+- Đo 2 lần. Lần 2 đúng **20/20** câu thử — có 2 câu đã sửa đề chấm, giữ đề cũ thì là 18/20
+- Slide 6 trang: `demo-slides.pdf`
+- Đã bỏ lệnh `/luuy`. Giờ chỉ có **một cách dùng là tag bot**
+- Repo đã push, file bí mật và dữ liệu thật đều đã bị chặn không lên GitHub được
+
+## Còn phải làm — theo thứ tự
+
+| # | Việc | Hạn | Mất bao lâu | Xem ở đâu |
+|---|---|---|---|---|
+| 1 | **Quay video demo dự phòng** | **13:00** | 20 phút | `design/kich-ban-video-cp5.md` |
+| 2 | **Cho 5 bạn ngoài nhóm dùng thử** — trong đó 2 bạn đã khai từ CP1 | **13:00** | 1 tiếng | `validation/` |
+| 3 | **Mỗi người tự viết reflection** của mình | **13:00** | 15 phút/người | `reflection/` |
+| 4 | Bấm 5 câu thử tay (TC15–18, TC25), điền vào bảng cuối | trước 17:30 | 15 phút | `eval/ket-qua-luot-2.md` |
+| 5 | Điền 2 mã học viên willing user, chỗ `[CẦN NHÓM ĐIỀN 2 MÃ HỌC VIÊN]` | trước 17:30 | 1 phút | `spec.md` |
+
+**Việc 2 đáng 8 điểm** — không làm thì tối đa chỉ được 92.
+
+⚠️ **Làm xong việc 2 thì sửa 2 chỗ** đang ghi "chưa cho 5 bạn dùng thử":
+- Slide 6: sửa `design/demo-slides.html` rồi xuất lại PDF (lệnh xuất ghi ở đầu file đó)
+- [Phần 8](#phần-8--thuyết-trình-ai-nói-gì) của file này
+
+**Thứ tự nên làm:** đổ dữ liệu vào kênh test trước vì nó chạy mất 5 phút → trong lúc chờ
+thì viết reflection → quay video → gọi người tới thử → cuối cùng bấm 5 câu thử.
+
+## Những thứ không có trên GitHub — phải xin trong nhóm
+
+| Thứ | Để làm gì | Đặt ở đâu |
+|---|---|---|
+| File `k4_messages.csv` | Dữ liệu tin nhắn thật để chạy | `discord-pack/k4_messages.csv` |
+| Khoá AI (dạng `AIzaSy...`) | Để bot hỏi được AI | file `.env`, dòng `GEMINI_API_KEY=` |
+| Mã bot Discord | Để bật được bot | file `.env`, dòng `DISCORD_BOT_TOKEN=` |
+| Link webhook kênh test | Để đổ dữ liệu vào kênh | file `.env`, dòng `DISCORD_WEBHOOK_URL=` |
+| Quyền vào server test của nhóm | Để demo | xin người giữ server |
+| Thư mục `eval/dem-api/` | Chạy không tốn lượt hỏi AI (không bắt buộc) | chép nguyên thư mục vào `eval/` |
+
+> **Không có khoá AI thì không chạy được gì cả**, kể cả `run.py`. Khoá của ai cũng được,
+> tự lấy miễn phí ở [2.3](#23--lấy-khoá-ai).
+>
+> Muốn chạy **không tốn lượt hỏi AI** thì xin chép thêm thư mục `eval/dem-api/` từ máy
+> người trong nhóm — trong đó là kết quả đã nhớ sẵn. Có thư mục này + khoá Gemini của mình
+> thì chạy bao nhiêu lần cũng không mất lượt. Thư mục này **không có trên GitHub** vì bên
+> trong có tóm tắt tin nhắn thật.
 
 ---
 
