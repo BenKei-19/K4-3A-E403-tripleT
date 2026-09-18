@@ -38,9 +38,7 @@ Một file duy nhất: dự án là gì · cài thế nào · chạy thế nào 
 |---|---|---|---|---|
 | 1 | **Quay video demo dự phòng** | **13:00** | 20 phút | `design/kich-ban-video-cp5.md` |
 | 2 | **Cho 5 bạn ngoài nhóm dùng thử** — trong đó 2 bạn đã khai từ CP1 | **13:00** | 1 tiếng | `validation/` |
-| 3 | **Mỗi người tự viết reflection** của mình | **13:00** | 15 phút/người | `reflection/` |
 | 4 | Bấm 5 câu thử tay (TC15–18, TC25), điền vào bảng cuối | trước 17:30 | 15 phút | `eval/ket-qua-luot-2.md` |
-| 5 | Điền 2 mã học viên willing user, chỗ `[CẦN NHÓM ĐIỀN 2 MÃ HỌC VIÊN]` | trước 17:30 | 1 phút | `spec.md` |
 
 **Việc 2 đáng 8 điểm** — không làm thì tối đa chỉ được 92.
 

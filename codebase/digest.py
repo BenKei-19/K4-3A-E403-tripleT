@@ -35,15 +35,19 @@ def _chon_provider() -> str:
     ep = os.environ.get("AI_PROVIDER", "").strip().lower()
     if ep in ("gemini", "claude"):
         return ep
-    if os.environ.get("GEMINI_API_KEY", "").startswith("AIza"):
+    gemini_key = os.environ.get("GEMINI_API_KEY", "").strip().strip('"').strip("'")
+    anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "").strip().strip('"').strip("'")
+    if gemini_key.startswith(("AIza", "AQ.")) or (gemini_key and not anthropic_key):
         return "gemini"
-    if os.environ.get("ANTHROPIC_API_KEY", "").startswith("sk-ant-"):
+    if anthropic_key.startswith("sk-ant-") or anthropic_key:
         return "claude"
+    if gemini_key:
+        return "gemini"
     return "chua_co_key"
 
 
 MODEL_CLAUDE = os.environ.get("CLAUDE_MODEL", "claude-opus-5")
-MODEL_GEMINI = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+MODEL_GEMINI = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
 
 # Phân loại tin nhắn không phải việc cần suy nghĩ sâu, nên "medium" là đủ và
 # nhanh hơn hẳn mặc định "high". Đây là thứ đáng chỉnh đầu tiên nếu video bị lê thê.
@@ -314,7 +318,7 @@ def _goi_gemini(prompt: str) -> str:
     from google import genai
     from google.genai import types
 
-    khach = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    khach = genai.Client(api_key=os.environ["GEMINI_API_KEY"].strip().strip('"').strip("'"))
     schema = json.loads(json.dumps(SCHEMA))          # bản sao
     _bo_additional_properties(schema)
 
@@ -357,6 +361,10 @@ def _goi_gemini(prompt: str) -> str:
                     ) from e
                 print(f"    (hết lượt tạm thời, chờ {cho:.0f}s rồi thử lại...)", flush=True)
                 time.sleep(cho)
+                continue
+            if "503" in msg or "UNAVAILABLE" in msg:
+                print(f"    (server Gemini bận tạm thời 503, chờ 5s rồi thử lại...)", flush=True)
+                time.sleep(5.0)
                 continue
             if "not found" in msg.lower() or "404" in msg:
                 co = [m.name for m in khach.models.list()

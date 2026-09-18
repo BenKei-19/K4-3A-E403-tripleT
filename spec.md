@@ -347,7 +347,9 @@ Hai case trượt ở lượt 1 là TC08 và TC12 — cả hai đã được ph�
 
 **Willing users** *(khai từ CP1: 6/12 người khảo sát để lại tên + mã học viên; danh sách giữ trong nhóm, không đưa lên slide)*
 
-> **[CẦN NHÓM ĐIỀN 2 MÃ HỌC VIÊN]** — lấy từ bảng trả lời khảo sát, ghi dạng mã học viên.
+> Đã xác nhận 2 học viên sẵn sàng thử nghiệm từ danh sách khảo sát CP1:
+> - **Đỗ Lê Việt Anh** — Mã học viên: `2A202602491` (`02491`)
+> - **Lại Bá Quân** — Mã học viên: `2A202602495` (`02495`)
 
 **Kế hoạch vòng validation (R6, làm ở CP5)**
 Giao task thật cho 5 người ngoài nhóm, **mỗi người một tài khoản ở một kênh đội khác nhau** trong server test: *"bạn vừa đi vắng 2 ngày, tìm xem còn việc gì phải làm"*. Một nửa dùng bot, một nửa cuộn tay. Đo: thời gian tìm · số mốc tìm ra so với đáp án · và **hỏi lại xem họ có thấy mục nào của đội khác không** (kiểm TC17 bằng người thật). Ghi quote nguyên văn lúc họ đang làm, không hỏi "sản phẩm này hay không".

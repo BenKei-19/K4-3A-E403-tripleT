@@ -14,8 +14,8 @@ người thử: `validation/phieu-task.md`.
 
 | # | Ai thử | CP1? | Nhóm | Task giao | Kẹt ở đâu | Quote nguyên văn | Thời gian | Quyết định của nhóm |
 |---|---|---|---|---|---|---|---|---|
-| 1 |  | ☐ | A · dùng bot | "Vừa vắng 2 ngày, tìm xem còn việc gì phải làm" |  |  | ___ giây |  |
-| 2 |  | ☐ | A · dùng bot | như trên |  |  | ___ giây |  |
+| 1 | Đỗ Lê Việt Anh (`2A202602491`) | ☑ | A · dùng bot | "Vừa vắng 2 ngày, tìm xem còn việc gì phải làm" |  |  | ___ giây |  |
+| 2 | Lại Bá Quân (`2A202602495`) | ☑ | A · dùng bot | như trên |  |  | ___ giây |  |
 | 3 |  | ☐ | A · dùng bot | như trên |  |  | ___ giây |  |
 | 4 |  | ☐ | B · cuộn tay | như trên |  |  | ___ giây |  |
 | 5 |  | ☐ | B · cuộn tay | như trên |  |  | ___ giây |  |
